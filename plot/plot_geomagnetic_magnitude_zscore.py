@@ -142,14 +142,10 @@ def plot_magnitudes(datasets: Iterable[Tuple[str, pd.DataFrame]]) -> Path:
     dataset_list = list(datasets)
     fig, ax = plt.subplots(figsize=(12, 6))
     palette = [
-    "#1C3885", "#4F8CBB", "#F4A25C", "#DD542F",
-    "#2A9D8F",  # 青绿：冷色补充，与蓝系协调
-    "#264653",  # 深青灰：沉稳、能当深色类别
-    "#6A4C93",  # 紫：补足另一条色相维度
-    "#F2C14E",  # 金黄：比橙更亮，区分度高
-    "#3FA7D6",  # 天蓝：介于蓝和青之间，清爽
-    "#8D99AE"   # 蓝灰：作为“低强调”类别也很稳
-]
+        "#1C3885", "#4F8CBB", "#F4A25C", "#DD542F",
+        "#2A9D8F", "#264653", "#6A4C93", "#F2C14E", 
+        "#3FA7D6", "#8D99AE"  
+    ]
     for idx, (label, df) in enumerate(dataset_list):
         color = palette[idx % len(palette)]
         curve = df["magnitude"]

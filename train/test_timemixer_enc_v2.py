@@ -87,7 +87,7 @@ def test(
             f"mean_l1={mean_l1:.3f} mean_l2={mean_l2:.3f} rmse_x={rmse_x:.3f} rmse_y={rmse_y:.3f} rmse_2d={rmse_2d:.3f}")
     
     res_dir.mkdir(parents=True, exist_ok=True)
-    file_name = f"data_with_label_ghw匀速1_loc_res_lstm_meanerr_{mean_l2:.4f}.csv"
+    file_name = f"wenguan_test1_loc_res_meanerr_{mean_l2:.4f}.csv"
     output_csv = res_dir / file_name
 
     results_df = pd.DataFrame(
@@ -105,8 +105,8 @@ def test(
 
 if __name__ == "__main__":
 
-    test_dir = Path("data") / "data_for_train_test_v12" / "4.26-resample-zscore" / "eval"
-    ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20251217_2117_rmse_2d_1.661_st_lstm_pdm3_fusionV2_5e-4.pt"
+    test_dir = Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-zscore" / "test1"
+    ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20251229_2128_rmse_2d_1.154_wenguan.pt"
     res_dir = Path("runs") / "loc_res" / "time_mixer"
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -117,7 +117,7 @@ if __name__ == "__main__":
     input_key = "x_mag"
     input_dim_reflect = {"x_mag":3, "x_mag_grad":9}
     feature_transform = build_transform(input_key=input_key)
-    criterion = WeightedSmoothL1(beta=0.05, w_x=1.0, w_y=1.3).to(device)
+    criterion = WeightedSmoothL1(beta=0.05, w_x=1.0, w_y=1.0).to(device)
 
     model = MagneticLocalizationTimeMixer(
         input_dim=input_dim_reflect[input_key],
@@ -125,7 +125,7 @@ if __name__ == "__main__":
         seq_len=128,
         down_sampling_window=2,
         down_sampling_layers=2,
-        num_pdm_blocks=3,
+        num_pdm_blocks=2,
         moving_avg_kernel=11, 
         nhead=8,
         num_layers=2,

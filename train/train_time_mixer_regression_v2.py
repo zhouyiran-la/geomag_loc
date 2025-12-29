@@ -131,9 +131,9 @@ def plot_and_save_losses(train_losses, val_losses, out_dir: Path, suffix: str = 
 
 
 def main():
-    train_dir = str(Path("data") / "data_for_train_test_v12" / "4.26-resample-zscore" / "train")
-    val_dir = str(Path("data") / "data_for_train_test_v12" / "4.26-resample-zscore" / "eval")
-    test_dir = str(Path("data") / "data_for_train_test_v12" / "4.26-resample-zscore" / "eval")
+    train_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-zscore" / "train")
+    val_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-zscore" / "eval")
+    test_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-zscore" / "eval")
     gpu_id = 1  # 用第二张卡
     device = torch.device(f"cuda:{gpu_id}" if torch.cuda.is_available() else "cpu")
 
@@ -178,17 +178,17 @@ def main():
         stride=20
     )
 
-    test_loader = create_magnetic_dataset_v2_dataloaders(
-        str(test_dir),
-        batch_size=batch_size,
-        pattern=".csv",
-        num_workers=num_workers,
-        shuffle_train=False,
-        pin_memory=pin_memory,
-        transform=feature_transform,
-        seq_len=128,
-        stride=20
-    )
+    # test_loader = create_magnetic_dataset_v2_dataloaders(
+    #     str(test_dir),
+    #     batch_size=batch_size,
+    #     pattern=".csv",
+    #     num_workers=num_workers,
+    #     shuffle_train=False,
+    #     pin_memory=pin_memory,
+    #     transform=feature_transform,
+    #     seq_len=128,
+    #     stride=20
+    # )
 
     model = MagneticLocalizationTimeMixer(
         input_dim=input_dim_reflect[input_key],
@@ -196,14 +196,14 @@ def main():
         seq_len=128,
         down_sampling_window=2,
         down_sampling_layers=2,
-        num_pdm_blocks=3,
+        num_pdm_blocks=2,
         moving_avg_kernel=11, 
         nhead=8,
         num_layers=2,
         output_dim=2,
     ).to(device)
 
-    criterion = WeightedSmoothL1(beta=0.05, w_x=1.0, w_y=1.3).to(device)
+    criterion = WeightedSmoothL1(beta=0.05, w_x=1.0, w_y=1.0).to(device)
     # criterion = nn.MSELoss()
     optimizer = Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     # 学习率调度器
@@ -264,8 +264,8 @@ def main():
 
     plot_and_save_losses(train_losses, val_losses, run_dir, suffix=date_suffix)
 
-    loc_res_dir = Path("runs") / "loc_res" / "time_mixer"
-    test(model, test_loader, criterion, device, best_path, loc_res_dir, input_key=input_key)
+    # loc_res_dir = Path("runs") / "loc_res" / "time_mixer"
+    # # test(model, test_loader, criterion, device, best_path, loc_res_dir, input_key=input_key)
 
 if __name__ == "__main__":
     main()
