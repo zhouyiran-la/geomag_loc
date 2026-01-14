@@ -251,7 +251,7 @@ class TimeMixerMultiScaleEncoderV3(nn.Module):
         #         num_layers=num_layers,
         #         out_dim=enc_out_dim,
         #         hidden_dim=d_model,      # 或者你想要的其他 hidden_dim
-        #         bidirectional=True,     # 想试双向的话改成 True
+        #         bidirectional=False,     # 想试双向的话改成 True
         #         dropout=0.1,
         #         use_pos_encoding=False,  # 如果想保留 PE，可以改成 True
         #     )
