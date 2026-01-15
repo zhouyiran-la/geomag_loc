@@ -131,9 +131,9 @@ def plot_and_save_losses(train_losses, val_losses, out_dir: Path, suffix: str = 
 
 
 def main():
-    train_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter" / "train")
-    val_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter" / "eval")
-    test_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter" / "test1")
+    train_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "train")
+    val_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "eval")
+    test_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "test1")
 
     
     gpu_id = 0  # 用第1张卡
@@ -164,7 +164,7 @@ def main():
         shuffle_train=True,
         pin_memory=pin_memory,
         transform=feature_transform,
-        seq_len=128,
+        seq_len=32,
         stride=20
     )
 
@@ -176,7 +176,7 @@ def main():
         shuffle_train=False,
         pin_memory=pin_memory,
         transform=feature_transform,
-        seq_len=128,
+        seq_len=32,
         stride=20
     )
 
@@ -188,14 +188,14 @@ def main():
         shuffle_train=False,
         pin_memory=pin_memory,
         transform=feature_transform,
-        seq_len=128,
+        seq_len=32,
         stride=20
     )
 
     model = MagneticLocalizationTimeMixer(
         input_dim=input_dim_reflect[input_key],
         d_model=128,
-        seq_len=128,
+        seq_len=32,
         down_sampling_window=2,
         down_sampling_layers=2,
         num_pdm_blocks=2,
