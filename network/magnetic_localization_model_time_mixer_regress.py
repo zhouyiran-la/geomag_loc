@@ -49,21 +49,21 @@ class MagneticLocalizationTimeMixer(nn.Module):
             enc_out_dim = 64
         )
 
-        feature_dim = 64
+        self.feature_dim = 64
         self.attention_fusion = MultiScaleAttentionFusionV2(
-            feature_dim=feature_dim,
+            feature_dim=self.feature_dim,
             num_scales=down_sampling_layers + 1,
             d_k=64,
             residual=True
         )
 
         self.localization_head = nn.Sequential(
-            nn.Linear(feature_dim, feature_dim * 2),
+            nn.Linear(self.feature_dim, self.feature_dim * 2),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(feature_dim * 2, feature_dim),
+            nn.Linear(self.feature_dim * 2, self.feature_dim),
             nn.ReLU(),
-            nn.Linear(feature_dim, output_dim),
+            nn.Linear(self.feature_dim, output_dim),
         )
 
     def forward(self, x):
