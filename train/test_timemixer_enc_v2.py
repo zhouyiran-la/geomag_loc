@@ -87,7 +87,7 @@ def test(
             f"mean_l1={mean_l1:.3f} mean_l2={mean_l2:.3f} rmse_x={rmse_x:.3f} rmse_y={rmse_y:.3f} rmse_2d={rmse_2d:.3f}")
     
     res_dir.mkdir(parents=True, exist_ok=True)
-    file_name = f"wenguan_test1_256_loc_res_meanerr_{mean_l2:.4f}.csv"
+    file_name = f"wenguan_test5_128_loc_res_meanerr_{mean_l2:.4f}.csv"
     output_csv = res_dir / file_name
 
     results_df = pd.DataFrame(
@@ -105,8 +105,8 @@ def test(
 
 if __name__ == "__main__":
 
-    test_dir = Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "test1"
-    ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20260115_2149_rmse_2d_7.709_32_xinxi.pt"
+    test_dir = Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "test5"
+    ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20260116_1817_rmse_2d_0.967_128_xinxi.pt"
     res_dir = Path("runs") / "loc_res" / "time_mixer"
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -122,7 +122,7 @@ if __name__ == "__main__":
     model = MagneticLocalizationTimeMixer(
         input_dim=input_dim_reflect[input_key],
         d_model=128,
-        seq_len=32,
+        seq_len=128,
         down_sampling_window=2,
         down_sampling_layers=2,
         num_pdm_blocks=2,
@@ -140,7 +140,7 @@ if __name__ == "__main__":
         shuffle_train=False,
         pin_memory=pin_memory,
         transform=feature_transform,
-        seq_len=32,
+        seq_len=128,
         stride=20
     )
 
