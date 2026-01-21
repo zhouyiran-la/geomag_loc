@@ -104,7 +104,8 @@ class MAIL(nn.Module):
         self.regressor = regressor.to(device)
 
     def forward(self, x):
-        grad_seq = gradient_sequence(x, keep_length=True)
+        # grad_seq = gradient_sequence(x, keep_length=True)
+        grad_seq = x
         psi_list = [sfe(grad_seq) for sfe in self.sfe_units]
         w = self.attn(grad_seq)
 
