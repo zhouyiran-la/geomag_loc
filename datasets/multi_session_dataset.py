@@ -209,6 +209,7 @@ def create_magnetic_dataset_v2_dataloaders(
     shuffle_train=True,
     pin_memory=False,
     transform=None,
+    stats=None,
     *,
     seq_len=128,
     stride=1,
@@ -238,13 +239,11 @@ def create_magnetic_dataset_v2_dataloaders(
     if files is None:
         return None
 
-    # # 是否需要 stats：normalize_x=True 或 y_norm_mode 为 global
-    # need_stats = bool(normalize_x) or (y_norm_mode in ("global_zscore", "global_minmax"))
+    # 是否需要 stats：normalize_x=True 或 y_norm_mode 为 global
+    need_cal_stats = bool(normalize_x) or (y_norm_mode in ("global_zscore", "global_minmax"))
     
-    # 后面可以用loder.dataset.stats获取
-    stats = None
-    # if need_stats:
-    #     stats = compute_train_stats_from_csv_files(train_files, mag_cols, pos_cols)
+    if need_cal_stats:
+        stats = compute_train_stats_from_csv_files(files, MAG_COLS, POS_COLS)
 
     def build_loader(files, shuffle: bool):
         if files is None:

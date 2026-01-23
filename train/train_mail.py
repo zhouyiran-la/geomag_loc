@@ -184,7 +184,7 @@ def main():
     checkpoints_dir.mkdir(parents=True, exist_ok=True)
     logs_dir.mkdir(parents=True, exist_ok=True)
     date_suffix = datetime.now().strftime("_%Y%m%d_%H%M")
-    best_ckpt = checkpoints_dir / f"mail_best{date_suffix}.pt"
+    best_ckpt = checkpoints_dir / f"mag_localization_mail_best{date_suffix}.pt"
 
     best_val = float("inf")
     train_losses, val_losses = [], []

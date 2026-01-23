@@ -131,9 +131,9 @@ def plot_and_save_losses(train_losses, val_losses, out_dir: Path, suffix: str = 
 
 
 def main():
-    train_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "train")
-    val_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "eval")
-    test_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "test1")
+    train_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter-v2" / "train")
+    val_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter-v2" / "eval")
+    test_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter-v2" / "test1")
 
     
     gpu_id = 0  # 用第1张卡
@@ -146,7 +146,7 @@ def main():
 
     batch_size = 32
     lr = 5e-4
-    epochs = 170
+    epochs = 400
     # weight_decay改大了一些
     weight_decay = 5e-4
     num_workers = 2 if device.type == "cuda" else 0
@@ -165,9 +165,11 @@ def main():
         pin_memory=pin_memory,
         transform=feature_transform,
         seq_len=256,
-        stride=20
+        stride=20,
+        normalize_x=False
     )
-
+    # train_stats = cast(MagneticDataSetV2, train_loader.dataset).stats # type: ignore
+    # print(f"train_stats={train_stats}")
     val_loader = create_magnetic_dataset_v2_dataloaders(
         val_dir,
         batch_size=batch_size,
@@ -176,9 +178,12 @@ def main():
         shuffle_train=False,
         pin_memory=pin_memory,
         transform=feature_transform,
+        # stats=train_stats,
         seq_len=256,
-        stride=20
+        stride=20,
+        normalize_x=False
     )
+
 
     test_loader = create_magnetic_dataset_v2_dataloaders(
         str(test_dir),
