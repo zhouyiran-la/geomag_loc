@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 from datasets import create_magnetic_dataset_v1_dataloaders
 from datasets.transforms import DefaultTransform, MagneticGradientTransform, ComposeTransform
-from network.magnetic_localization_model_regress_fast import MagneticLocalizationModelFast
+from network.multi_scale_transformer import MagneticLocalizationModelFast
 
 
 def build_gradient_transform():

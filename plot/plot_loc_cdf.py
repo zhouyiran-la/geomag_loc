@@ -6,12 +6,17 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.ticker import AutoMinorLocator
+from matplotlib import font_manager
+import matplotlib
 
+
+matplotlib.rcParams["axes.unicode_minus"] = False
 
 matplotlib.use("Agg")
 plt.style.use("seaborn-v0_8-whitegrid")
 plt_rc = matplotlib.rcParams
-plt_rc["font.family"] = ["Times New Roman", "SimHei", "Microsoft YaHei"]
+
+plt_rc["font.family"] = ["Noto Sans CJK JP", "DejaVu Sans"]
 plt_rc["axes.unicode_minus"] = False
 plt_rc.update(
     {
@@ -29,27 +34,22 @@ plt_rc.update(
 
 ROOT = Path(__file__).resolve().parents[1]
 CSV_PATHS = [
-    # ROOT / "runs" / "loc_res" / "season_trend" / "dataset61_miderr_20pct_068_126.csv",
-    # ROOT / "runs" / "loc_res" / "season_trend" / "dataset61_meanerr_plus_0.24_adjusted_miderr.csv",
-    # ROOT / "runs" / "loc_res" / "season_trend" / "dataset61_meanerr_plus_0.41_smoothed.csv",
-    # ROOT / "runs" / "loc_res" / "season_trend" / "dataset61_meanerr_plus_0.61.csv",
-    # ROOT / "runs" / "loc_res" / "season_trend" / "dataset61_meanerr_plus_0.58.csv",
-    # ROOT / "runs" / "loc_res" / "different_method" / "dataset61_miderr_20pct_068_126.csv",
-    # ROOT / "runs" / "loc_res" / "different_method" / "result_plus_1.15.csv",
-    # ROOT / "runs" / "loc_res" / "different_method" / "result_plus_0.53.csv",
-    # ROOT / "runs" / "loc_res" / "different_method" / "result_plus_0.88.csv",
     
-    # ROOT / "runs" / "loc_res" / "different_method" / "result_plus_2.20.csv",
-    # ROOT / "runs" / "loc_res" / "dataset58.csv",
-    ROOT / "runs" / "loc_res" / "time_mixer" / "data_with_label_ghw匀速1_loc_res_rnn_meanerr_1.4801.csv",
-    ROOT / "runs" / "loc_res" / "time_mixer" / "data_with_label_ghw匀速1_loc_res_lstm_meanerr_1.2520.csv",
-    ROOT / "runs" / "loc_res" / "time_mixer" / "data_with_label_ghw匀速1_loc_res_trans_meanerr_1.0572.csv",
-    ROOT / "runs" / "loc_res" / "time_mixer" / "data_with_label_ghw匀速1_loc_res_bilstm_meanerr_0.8231.csv",
-    ROOT / "runs" / "loc_res" / "time_mixer" / "data_with_label_ghw匀速1_loc_res_tcn_meanerr_0.5809.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_xinxi" / "data_with_label_ghw匀速1_loc_res_rnn_meanerr_1.4801.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_xinxi" / "data_with_label_ghw匀速1_loc_res_lstm_meanerr_1.2520.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_xinxi" / "data_with_label_ghw匀速1_loc_res_trans_meanerr_1.0572.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_xinxi" / "data_with_label_ghw匀速1_loc_res_bilstm_meanerr_0.8231.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_xinxi" / "data_with_label_ghw匀速1_loc_res_tcn_meanerr_0.5809.csv",
+
+    ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_wenguan" / "wenguan_test1_bilstm_loc_res_meanerr_1.3088.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_wenguan" / "wenguan_test1_lstm_loc_res_meanerr_1.3494.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_wenguan" / "wenguan_test1_rnn_loc_res_meanerr_2.2984.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_wenguan" / "wenguan_test1_trans_loc_res_meanerr_1.6811.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_wenguan" / "wenguan_test1_tcn_loc_res_meanerr_0.9090.csv",
 ]
 # LABELS = ["Proposed", "Wang(2024)", "HLSTM(2022)", "MAIL(2020)", "RNN"]
-LABELS = ["TimeMixer+RNN", "TimeMixer+LSTM", "TimeMixer+Transformer", "TimeMixer+BiLSTM", "TimeMixer+TCN"]
-OUTPUT_PATH = ROOT / "plot" / "output" / "loc_cdf_differernt_encoder.png"
+LABELS = ["BiLSTM-encoder", "LSTM-encoder", "RNN-encoder", "TransFormer-encoder" , "TCN-encoder"]
+OUTPUT_PATH = ROOT / "plot" / "output" / "loc_cdf_differernt_encoder_wenguan2.png"
 PLOT_TITLE = "Localization Error CDF"
 X_MAX = None  # Set to a float to force xmax, or None to auto-scale.
 
@@ -122,7 +122,7 @@ def main():
         x_max = max_x * 1.05 if max_x > 0 else 1.0
     x_min = -0.1
     # x_max = 6
-    plt.xticks(np.linspace(0, int(x_max), num=int(x_max+1)))
+    plt.xticks(np.linspace(0, 25, num=6))
     plt.yticks(np.linspace(0.0, 1.0, num=6))
     ax = plt.gca()
     ax.xaxis.set_minor_locator(AutoMinorLocator(5))

@@ -13,7 +13,7 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 from datasets import MagneticDataSetV2, create_magnetic_dataset_v2_dataloaders
 from datasets.utils import build_transform, denorm_y
 from network.losses import WeightedSmoothL1
-from network.magnetic_localization_model_regress_fast import MagneticLocalizationModelFast
+from network.multi_scale_transformer import MagneticLocalizationModelFast
 
 
 def train_one_epoch(model, loader, criterion, optimizer, device, input_key: str = "x_mag"):
@@ -144,7 +144,7 @@ def main():
         shuffle_train=True,
         pin_memory=pin_memory,
         transform=feature_transform,
-        seq_len=256,
+        seq_len=128,
         stride=20,
     )
 
@@ -156,7 +156,7 @@ def main():
         shuffle_train=False,
         pin_memory=pin_memory,
         transform=feature_transform,
-        seq_len=256,
+        seq_len=128,
         stride=20,
     )
 

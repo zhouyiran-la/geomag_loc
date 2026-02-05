@@ -10,7 +10,7 @@ from layer.timemixer_multiscale_encoder_v2 import TimeMixerMultiScaleEncoderV3
 class MagneticLocalizationTimeMixer(nn.Module):
     """
     使用 TimeMixer 风格的多尺度季节/趋势分解 + 双向混合，
-    每个尺度后接 Transformer Encoder，再做多尺度注意力融合，最后回归坐标。
+    每个尺度后接 TCN Encoder，再做多尺度注意力融合，最后回归坐标。
     """
 
     def __init__(

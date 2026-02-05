@@ -128,8 +128,8 @@ def plot_and_save_losses(train_losses, val_losses, out_dir: Path, suffix: str = 
 # ---------------------------
 
 def main():
-    train_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "train")
-    val_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "eval")
+    train_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter-v2" / "train")
+    val_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter-v2" / "eval")
 
     gpu_id = 0
     device = torch.device(f"cuda:{gpu_id}" if torch.cuda.is_available() else "cpu")
