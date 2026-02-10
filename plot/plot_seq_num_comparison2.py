@@ -16,15 +16,15 @@ plt_rc["font.family"] = ["Times New Roman", "SimHei", "Microsoft YaHei"]
 plt_rc["axes.unicode_minus"] = False
 
 plt_rc.update({
-    "axes.labelsize": 13,
-    "axes.titlesize": 13,
-    "xtick.labelsize": 11,
-    "ytick.labelsize": 11,
-    "legend.fontsize": 11,
-    "lines.linewidth": 1.6,
+    "axes.labelsize": 15,
+    "axes.titlesize": 15,
+    "xtick.labelsize": 13,
+    "ytick.labelsize": 13,
+    "legend.fontsize": 13,
+    "lines.linewidth": 2.0,
     "grid.alpha": 0.4,
     "axes.edgecolor": "0.25",
-    "axes.linewidth": 0.8,
+    "axes.linewidth": 1.5,
 })
 
 # ===== 数据 =====

@@ -188,8 +188,8 @@ class PastDecomposableMixing(nn.Module):
         # 合并
         out_list = []
         for ori, s, t, L in zip(x_list, out_season, out_trend, length_list):
-            # y = s + t
-            y = t
+            y = s + t
+            # y = t
             if self.channel_independence:
                 y = ori + self.out_cross(y)
             out_list.append(y[:, :L, :])
@@ -239,10 +239,10 @@ class TimeMixerMultiScaleEncoderV3(nn.Module):
         ])
 
         # === 3) 每个尺度一个 Transformer encoder ===
-        self.scale_encoders = nn.ModuleList([
-            PerScaleTransformerEncoderV2(d_model=d_model, nhead=nhead, num_layers=num_layers, out_dim=enc_out_dim)
-            for _ in range(self.M + 1)
-        ])
+        # self.scale_encoders = nn.ModuleList([
+        #     PerScaleTransformerEncoderV2(d_model=d_model, nhead=nhead, num_layers=num_layers, out_dim=enc_out_dim)
+        #     for _ in range(self.M + 1)
+        # ])
 
         # # === 3) 每个尺度一个 LSTM encoder ===
         # self.scale_encoders = nn.ModuleList([
@@ -251,7 +251,7 @@ class TimeMixerMultiScaleEncoderV3(nn.Module):
         #         num_layers=num_layers,
         #         out_dim=enc_out_dim,
         #         hidden_dim=d_model,      # 或者你想要的其他 hidden_dim
-        #         bidirectional=True,     # 想试双向的话改成 True
+        #         bidirectional=False,     # 想试双向的话改成 True
         #         dropout=0.1,
         #         use_pos_encoding=False,  # 如果想保留 PE，可以改成 True
         #     )
@@ -271,18 +271,18 @@ class TimeMixerMultiScaleEncoderV3(nn.Module):
         #     for _ in range(self.M + 1)
         # ])
         # === 3) 每个尺度一个 TCN encoder ===
-        # self.scale_encoders = nn.ModuleList([
-        #     PerScaleTCNEncoder(
-        #         d_model=d_model,
-        #         num_layers=num_layers,
-        #         out_dim=enc_out_dim,
-        #         hidden_dim=d_model,     
-        #         kernel_size=3,     
-        #         dropout=0.1,
-        #         use_pos_encoding=False,  
-        #     )
-        #     for _ in range(self.M + 1)
-        # ])
+        self.scale_encoders = nn.ModuleList([
+            PerScaleTCNEncoder(
+                d_model=d_model,
+                num_layers=num_layers,
+                out_dim=enc_out_dim,
+                hidden_dim=d_model,     
+                kernel_size=3,     
+                dropout=0.1,
+                use_pos_encoding=False,  
+            )
+            for _ in range(self.M + 1)
+        ])
 
     def _multi_scale_inputs(self, x):
         B, T, C = x.shape

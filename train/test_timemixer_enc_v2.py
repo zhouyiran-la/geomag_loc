@@ -1,3 +1,4 @@
+import csv
 import numpy as np
 import pandas as pd
 import torch
@@ -83,11 +84,12 @@ def test(
     rmse_x = math.sqrt(mse_x)
     rmse_y = math.sqrt(mse_y)
     rmse_2d = math.sqrt(mse_x + mse_y)
+
     print(f"val_loss={val_loss:.6f} | "
             f"mean_l1={mean_l1:.3f} mean_l2={mean_l2:.3f} rmse_x={rmse_x:.3f} rmse_y={rmse_y:.3f} rmse_2d={rmse_2d:.3f}")
     
     res_dir.mkdir(parents=True, exist_ok=True)
-    file_name = f"wenguan_test1_trans_loc_res_meanerr_{mean_l2:.4f}.csv"
+    file_name = f"xinxi_test1_tcn_loc_res_meanerr_{mean_l2:.4f}.csv"
     output_csv = res_dir / file_name
 
     results_df = pd.DataFrame(
@@ -99,14 +101,33 @@ def test(
             "euclidean_error": all_errors,
         }
     )
-    results_df.to_csv(output_csv, index=False)
+
+    metrics = {
+        "val_loss": val_loss,
+        "mean_l1": mean_l1,
+        "mean_l2": mean_l2,
+        "rmse_x": rmse_x,
+        "rmse_y": rmse_y,
+        "rmse_2d": rmse_2d,
+        "num_samples": total_samples,
+    }
+    
+    # 先写指标，再写明细
+    with open(output_csv, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["metric", "value"])
+        for k, v in metrics.items():
+            w.writerow([k, v])
+        w.writerow([])  # 空行分隔
+        results_df.to_csv(f, index=False)
+
     print(f"结果已保存到: {output_csv}")
 
 
 if __name__ == "__main__":
 
-    test_dir = Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter-v2" / "test2"
-    ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20260205_2117_rmse_2d_1.915_trans_wenguan.pt"
+    test_dir = Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "test1"
+    ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20260208_2141_rmse_2d_1.109_tcn_xinxi.pt"
     res_dir = Path("runs") / "loc_res" / "time_mixer"
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
