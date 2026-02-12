@@ -34,6 +34,12 @@ CSV_PATHS = [
     # ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_wenguan" / "wenguan_test1_rnn_loc_res_meanerr_2.2984.csv",
     # ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_wenguan" / "wenguan_test1_trans_loc_res_meanerr_1.6811.csv",
     # ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_wenguan" / "wenguan_test1_tcn_loc_res_meanerr_0.9090.csv",
+   
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_wenguan" / "2034_wenguan_test1_bilstm_loc_res_meanerr_1.3088.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_wenguan" / "1537_wenguan_test3_lstm_loc_res_meanerr_1.3920.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_wenguan" / "2000_wenguan_test3_rnn_loc_res_meanerr_2.2984.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_wenguan" / "2117_wenguan_test3_trans_loc_res_meanerr_1.6811.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_encoder_wenguan" / "2128_wenguan_test3_tcn_loc_res_meanerr_0.9293.csv",
 
     ROOT / "runs" / "loc_res" / "time_mixer_time_mixer_different_encoder_xinxi_new_data" / "xinxi_test3_bilstm_loc_res_meanerr_1.4181.csv",
     ROOT / "runs" / "loc_res" / "time_mixer_time_mixer_different_encoder_xinxi_new_data" / "xinxi_test1_lstm_loc_res_meanerr_1.4615.csv",
@@ -44,11 +50,11 @@ CSV_PATHS = [
 ]
 
 LABELS = [
-    "BiLSTM-encoder",
-    "LSTM-encoder",
-    "RNN-encoder",
-    "Transformer-encoder",
-    "TCN-encoder",
+    "BiLSTM-Encoder",
+    "LSTM-Encoder",
+    "RNN-Encoder",
+    "Transformer-Encoder",
+    "TCN-Encoder",
 ]
 
 OUTPUT_PATH = ROOT / "plot" / "output" / "loc_error_boxplot_multi_mean_xinxi.png"
@@ -57,17 +63,41 @@ Y_MAX = None  # 可手动设上限，如 6.0
 # ================== 读取误差 ==================
 def read_errors(csv_path: Path) -> np.ndarray:
     errors: List[float] = []
-    with csv_path.open("r", encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        if "euclidean_error" not in (reader.fieldnames or []):
-            raise ValueError(f"'euclidean_error' not found in {csv_path}")
+    with csv_path.open("r", encoding="utf-8", newline="") as f:
+        # 先逐行读，直到找到真正数据表头（包含 euclidean_error）
+        header_line = None
+        while True:
+            line = f.readline()
+            if not line:  # EOF
+                break
+            s = line.strip()
+            if not s:
+                continue
+            # 找到第二段的表头行
+            if "euclidean_error" in s.split(","):
+                header_line = s
+                break
+
+        if header_line is None:
+            raise ValueError(f"Data header with 'euclidean_error' not found in {csv_path}")
+
+        headers = [h.strip() for h in header_line.split(",")]
+        if "euclidean_error" not in headers:
+            raise ValueError(f"'euclidean_error' column not found in {csv_path}")
+
+        # 从当前文件指针位置继续读数据行
+        reader = csv.DictReader(f, fieldnames=headers)
         for row in reader:
             try:
-                errors.append(float(row["euclidean_error"]))
+                v = row.get("euclidean_error", "")
+                if v is None or v == "":
+                    continue
+                errors.append(float(v))
             except (TypeError, ValueError):
                 continue
+
     if not errors:
-        raise ValueError(f"No valid errors in {csv_path}")
+        raise ValueError(f"No valid errors loaded from {csv_path}")
     return np.asarray(errors, dtype=np.float32)
 
 # ================== 主函数 ==================
