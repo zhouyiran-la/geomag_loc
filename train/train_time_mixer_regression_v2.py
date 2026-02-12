@@ -146,9 +146,9 @@ def main():
 
     batch_size = 32
     lr = 5e-4
-    epochs = 200
+    epochs = 400
     # weight_decay改大了一些
-    weight_decay = 5e-4
+    weight_decay = 3e-4
     num_workers = 2 if device.type == "cuda" else 0
     pin_memory = device.type == "cuda"
 

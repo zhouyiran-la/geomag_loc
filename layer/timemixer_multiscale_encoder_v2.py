@@ -245,18 +245,18 @@ class TimeMixerMultiScaleEncoderV3(nn.Module):
         # ])
 
         # # === 3) 每个尺度一个 LSTM encoder ===
-        self.scale_encoders = nn.ModuleList([
-            PerScaleLSTMEncoder(
-                d_model=d_model,
-                num_layers=num_layers,
-                out_dim=enc_out_dim,
-                hidden_dim=d_model,      # 或者你想要的其他 hidden_dim
-                bidirectional=False,     # 想试双向的话改成 True
-                dropout=0.1,
-                use_pos_encoding=False,  # 如果想保留 PE，可以改成 True
-            )
-            for _ in range(self.M + 1)
-        ])
+        # self.scale_encoders = nn.ModuleList([
+        #     PerScaleLSTMEncoder(
+        #         d_model=d_model,
+        #         num_layers=num_layers,
+        #         out_dim=enc_out_dim,
+        #         hidden_dim=d_model,      # 或者你想要的其他 hidden_dim
+        #         bidirectional=False,     # 想试双向的话改成 True
+        #         dropout=0.1,
+        #         use_pos_encoding=False,  # 如果想保留 PE，可以改成 True
+        #     )
+        #     for _ in range(self.M + 1)
+        # ])
         # === 3) 每个尺度一个 RNN encoder ===
         # self.scale_encoders = nn.ModuleList([
         #     PerScaleRNNEncoder(
@@ -271,18 +271,18 @@ class TimeMixerMultiScaleEncoderV3(nn.Module):
         #     for _ in range(self.M + 1)
         # ])
         # === 3) 每个尺度一个 TCN encoder ===
-        # self.scale_encoders = nn.ModuleList([
-        #     PerScaleTCNEncoder(
-        #         d_model=d_model,
-        #         num_layers=num_layers,
-        #         out_dim=enc_out_dim,
-        #         hidden_dim=d_model,     
-        #         kernel_size=3,     
-        #         dropout=0.1,
-        #         use_pos_encoding=False,  
-        #     )
-        #     for _ in range(self.M + 1)
-        # ])
+        self.scale_encoders = nn.ModuleList([
+            PerScaleTCNEncoder(
+                d_model=d_model,
+                num_layers=num_layers,
+                out_dim=enc_out_dim,
+                hidden_dim=d_model,     
+                kernel_size=3,     
+                dropout=0.1,
+                use_pos_encoding=False,  
+            )
+            for _ in range(self.M + 1)
+        ])
 
     def _multi_scale_inputs(self, x):
         B, T, C = x.shape
