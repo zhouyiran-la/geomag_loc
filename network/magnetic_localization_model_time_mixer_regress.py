@@ -46,7 +46,8 @@ class MagneticLocalizationTimeMixer(nn.Module):
             num_pdm_blocks=num_pdm_blocks,
             nhead=nhead,
             num_layers=num_layers,
-            enc_out_dim = 64
+            enc_out_dim = 64,
+            use_decomp=False
         )
 
         self.feature_dim = 64

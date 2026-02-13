@@ -146,7 +146,7 @@ def main():
 
     batch_size = 32
     lr = 5e-4
-    epochs = 400
+    epochs = 200
     # weight_decay改大了一些
     weight_decay = 3e-4
     num_workers = 2 if device.type == "cuda" else 0
@@ -209,7 +209,7 @@ def main():
         num_layers=2,
         output_dim=2,
     ).to(device)
-    criterion = WeightedSmoothL1(beta=0.05, w_x=1.0, w_y=1.3).to(device)
+    criterion = WeightedSmoothL1(beta=0.05, w_x=1.0, w_y=1.0).to(device)
     # criterion = nn.MSELoss()
     optimizer = Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     # 学习率调度器
