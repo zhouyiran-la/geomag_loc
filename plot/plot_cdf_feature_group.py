@@ -32,12 +32,19 @@ plt_rc.update({
 
 ROOT = Path(__file__).resolve().parents[1]
 CSV_PATHS = [
-    ROOT / "runs" / "loc_res" / "time_mixer" / "1405_wenguan_test3_season+trend_loc_res_meanerr_0.8808.csv",
-    ROOT / "runs" / "loc_res" / "time_mixer" / "1759_wenguan_test1_no_mix_no_decompose_loc_res_meanerr_1.1121.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "1405_wenguan_test3_season+trend_loc_res_meanerr_0.8808.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "1759_wenguan_test1_no_mix_no_decompose_loc_res_meanerr_1.1121.csv",
     # ROOT / "runs" / "loc_res" / "time_mixer" / "0028_wenguan_test1_trend_loc_res_meanerr_1.4801.csv",
-    ROOT / "runs" / "loc_res" / "time_mixer" / "0028_wenguan_test2_trend_loc_res_meanerr_1.2151.csv",
-    ROOT / "runs" / "loc_res" / "time_mixer" / "0051_wenguan_test2_no_decompose_loc_res_meanerr_1.6449.csv",
-    ROOT / "runs" / "loc_res" / "time_mixer" / "1317_wenguan_test1_no_decompose_loc_res_meanerr_1.7089.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "0028_wenguan_test2_trend_loc_res_meanerr_1.2151.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "0051_wenguan_test2_no_decompose_loc_res_meanerr_1.6449.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "1317_wenguan_test1_no_decompose_loc_res_meanerr_1.7089.csv",
+    
+    # ROOT / "runs" / "loc_res" / "time_mixer" / "2141_xinxi_test2_season+trend_loc_res_meanerr_0.6825.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer" / "0012_xinxi_test3_no_mix_loc_res_meanerr_0.8363.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer" / "2302_xinxi_test1_trend_only_loc_res_meanerr_0.8995.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer" / "2322_xinxi_test3_trend_only_loc_res_meanerr_1.2581.csv",
+    # # ROOT / "runs" / "loc_res" / "time_mixer" / "2322_xinxi_test3_trend_only_loc_res_meanerr_1.2581.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer" / "2333_xinxi_test1_no_decompose_loc_res_meanerr_1.5111.csv",
     
 ]
 

@@ -482,7 +482,7 @@ class TimeMixerMultiScaleEncoderV3(nn.Module):
                     down_sampling_window=down_sampling_window,
                     down_sampling_layers=down_sampling_layers,
                     use_mixing=True,
-                    fuse_mode='add'
+                    fuse_mode='add',  # 先试只保留趋势信息，看看效果；后续可以改成 'add' 或 'season_only' 做对比
                 )
                 for _ in range(num_pdm_blocks)
             ])
