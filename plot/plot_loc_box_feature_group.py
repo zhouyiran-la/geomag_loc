@@ -1,0 +1,165 @@
+import csv
+from pathlib import Path
+from typing import List, Tuple
+
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.ticker import AutoMinorLocator
+
+# ================== matplotlib 样式 ==================
+matplotlib.use("Agg")
+plt.style.use("seaborn-v0_8-whitegrid")
+plt_rc = matplotlib.rcParams
+plt_rc["font.family"] = ["Noto Sans CJK JP", "DejaVu Sans"]
+plt_rc["axes.unicode_minus"] = False
+plt_rc.update({
+    "axes.labelsize": 15,
+    "axes.titlesize": 15,
+    "xtick.labelsize": 13,
+    "ytick.labelsize": 13,
+    "legend.fontsize": 13,
+    "lines.linewidth": 2.0,
+    "grid.alpha": 0.4,
+    "axes.edgecolor": "0.25",
+    "axes.linewidth": 1.5,
+})
+
+# ================== 路径配置 ==================
+ROOT = Path(__file__).resolve().parents[1]
+
+CSV_PATHS = [
+    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "1405_wenguan_test3_season+trend_loc_res_meanerr_0.8808.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "1759_wenguan_test1_no_mix_no_decompose_loc_res_meanerr_1.1121.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer" / "0028_wenguan_test1_trend_loc_res_meanerr_1.4801.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "0028_wenguan_test2_trend_loc_res_meanerr_1.2151.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "0051_wenguan_test2_no_decompose_loc_res_meanerr_1.6449.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "1317_wenguan_test1_no_decompose_loc_res_meanerr_1.7089.csv",
+    
+    # ROOT / "runs" / "loc_res" / "time_mixer" / "2141_xinxi_test2_season+trend_loc_res_meanerr_0.6825.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer" / "0012_xinxi_test3_no_mix_loc_res_meanerr_0.8363.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer" / "2302_xinxi_test1_trend_only_loc_res_meanerr_0.8995.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer" / "2322_xinxi_test3_trend_only_loc_res_meanerr_1.2581.csv",
+    # # ROOT / "runs" / "loc_res" / "time_mixer" / "2322_xinxi_test3_trend_only_loc_res_meanerr_1.2581.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer" / "2333_xinxi_test1_no_decompose_loc_res_meanerr_1.5111.csv",
+
+]
+
+LABELS = [
+    "Season_Trend", "Season_Trend_No_Mixed", "Trend_Only", "Season_Only" , "No_Decompose"
+]
+
+OUTPUT_PATH = ROOT / "plot" / "output" / "loc_error_boxplot_feature_group_wenguan.png"
+Y_MAX = None  # 可手动设上限，如 6.0
+
+# ================== 读取误差 ==================
+def read_errors(csv_path: Path) -> np.ndarray:
+    errors: List[float] = []
+    with csv_path.open("r", encoding="utf-8", newline="") as f:
+        # 先逐行读，直到找到真正数据表头（包含 euclidean_error）
+        header_line = None
+        while True:
+            line = f.readline()
+            if not line:  # EOF
+                break
+            s = line.strip()
+            if not s:
+                continue
+            # 找到第二段的表头行
+            if "euclidean_error" in s.split(","):
+                header_line = s
+                break
+
+        if header_line is None:
+            raise ValueError(f"Data header with 'euclidean_error' not found in {csv_path}")
+
+        headers = [h.strip() for h in header_line.split(",")]
+        if "euclidean_error" not in headers:
+            raise ValueError(f"'euclidean_error' column not found in {csv_path}")
+
+        # 从当前文件指针位置继续读数据行
+        reader = csv.DictReader(f, fieldnames=headers)
+        for row in reader:
+            try:
+                v = row.get("euclidean_error", "")
+                if v is None or v == "":
+                    continue
+                errors.append(float(v))
+            except (TypeError, ValueError):
+                continue
+
+    if not errors:
+        raise ValueError(f"No valid errors loaded from {csv_path}")
+    return np.asarray(errors, dtype=np.float32)
+
+# ================== 主函数 ==================
+def main():
+    if len(LABELS) != len(CSV_PATHS):
+        raise ValueError("LABELS length must match CSV_PATHS length")
+
+    all_errors: List[np.ndarray] = []
+    means: List[float] = []
+    used_labels: List[str] = []
+    y_max_seen = 0.0
+
+    for p, lab in zip(CSV_PATHS, LABELS):
+        if not p.exists():
+            print(f"Skip missing file: {p}")
+            continue
+        errs = read_errors(p)
+        all_errors.append(errs)
+        means.append(float(np.mean(errs)))
+        used_labels.append(lab)
+        y_max_seen = max(y_max_seen, float(np.max(errs)))
+
+    if not all_errors:
+        raise RuntimeError("No valid CSV files found.")
+
+    positions = np.arange(1, len(all_errors) + 1)
+
+    plt.figure(figsize=(10, 8))
+
+    # -------- 箱线图 --------
+    plt.boxplot(
+        all_errors,
+        positions=positions,
+        widths=0.55,
+        whis=1.5,
+        showfliers=True,
+        patch_artist=False,
+    )
+
+    # -------- 均值点 --------
+    plt.scatter(
+        positions,
+        means,
+        marker="o",
+        s=40,
+        zorder=3,
+        label="Mean",
+    )
+
+    plt.ylabel("定位误差（m）")
+    plt.xticks(positions, used_labels, rotation=15)
+    plt.grid(True, linestyle="--", linewidth=0.5, alpha=0.5)
+
+    ax = plt.gca()
+    ax.yaxis.set_minor_locator(AutoMinorLocator(4))
+    ax.xaxis.set_minor_locator(AutoMinorLocator(2))
+    ax.tick_params(axis="both", which="major", direction="in", length=6, width=0.8)
+    ax.tick_params(axis="both", which="minor", direction="in", length=3, width=0.6)
+
+    y_min = 0.0
+    y_max = Y_MAX if Y_MAX is not None else y_max_seen * 1.10
+    plt.ylim(y_min, 22.9)
+
+    plt.legend(loc="upper right")
+    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    plt.tight_layout()
+    plt.savefig(OUTPUT_PATH, dpi=600)
+    plt.close()
+
+    print(f"Saved boxplot with mean to {OUTPUT_PATH.resolve()}")
+
+if __name__ == "__main__":
+    main()
