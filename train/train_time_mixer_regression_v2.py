@@ -131,9 +131,9 @@ def plot_and_save_losses(train_losses, val_losses, out_dir: Path, suffix: str = 
 
 
 def main():
-    train_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "train")
-    val_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "eval")
-    test_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "test1")
+    train_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter-v2" / "train")
+    val_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter-v2" / "eval")
+    test_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter-v2" / "test1")
 
     
     gpu_id = 0  # 用第1张卡
@@ -146,7 +146,7 @@ def main():
 
     batch_size = 32
     lr = 5e-4
-    epochs = 200
+    epochs = 100
     # weight_decay改大了一些
     weight_decay = 5e-4
     num_workers = 2 if device.type == "cuda" else 0
@@ -202,14 +202,14 @@ def main():
         d_model=128,
         seq_len=128,
         down_sampling_window=2,
-        down_sampling_layers=2,
+        down_sampling_layers=1,
         num_pdm_blocks=2,
         moving_avg_kernel=11, 
         nhead=8,
         num_layers=2,
         output_dim=2,
     ).to(device)
-    criterion = WeightedSmoothL1(beta=0.05, w_x=1.0, w_y=1.3).to(device)
+    criterion = WeightedSmoothL1(beta=0.05, w_x=1.3, w_y=1.0).to(device)
     # criterion = nn.MSELoss()
     optimizer = Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     # 学习率调度器
