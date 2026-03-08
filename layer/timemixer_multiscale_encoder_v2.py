@@ -555,30 +555,75 @@ class TimeMixerMultiScaleEncoderV3(nn.Module):
 
         return x_list
 
-    def forward(self, x):
+    # def forward(self, x):
+    #     # Step 1: multi-scale
+    #     x_scales = self._multi_scale_inputs(x)  # list of (B, L_k, C)
+
+    #     # ====== 分支 1：多尺度 + 无分解（baseline）======
+    #     if not self.use_decomp:
+    #         emb_scales = [self.embedding(xs, None) for xs in x_scales]   # list (B,L_k,D)
+    #         encoded = [enc(emb_scales[i]) for i, enc in enumerate(self.scale_encoders)]
+    #         return encoded
+
+    #     # ====== 分支 2：完整模型（分解 + PDM mixing）======
+    #     season_scales, trend_scales = [], []
+    #     for xs in x_scales:
+    #         s, t = self.decomp(xs) # type: ignore
+    #         season_scales.append(s)
+    #         trend_scales.append(t)
+
+    #     emb_scales = [self.embedding(xs, None) for xs in x_scales]
+    #     season_emb = [self.embedding(s, None) for s in season_scales]
+    #     trend_emb  = [self.embedding(t, None) for t in trend_scales]
+
+    #     out_list = None
+    #     for pdm in self.pdm_blocks: # type: ignore
+    #         out_list = pdm(emb_scales, season_emb, trend_emb)
+
+    #     encoded = [enc(out_list[i]) for i, enc in enumerate(self.scale_encoders)] # type: ignore
+    #     return encoded
+    
+    def forward(self, x, return_decomp: bool = False):
         # Step 1: multi-scale
         x_scales = self._multi_scale_inputs(x)  # list of (B, L_k, C)
 
         # ====== 分支 1：多尺度 + 无分解（baseline）======
         if not self.use_decomp:
-            emb_scales = [self.embedding(xs, None) for xs in x_scales]   # list (B,L_k,D)
+            emb_scales = [self.embedding(xs, None) for xs in x_scales]
             encoded = [enc(emb_scales[i]) for i, enc in enumerate(self.scale_encoders)]
+
+            if return_decomp:
+                return {
+                    "encoded": encoded,
+                    "x_scales": x_scales,
+                    "season_scales": None,
+                    "trend_scales": None,
+                }
             return encoded
 
         # ====== 分支 2：完整模型（分解 + PDM mixing）======
         season_scales, trend_scales = [], []
         for xs in x_scales:
-            s, t = self.decomp(xs) # type: ignore
+            s, t = self.decomp(xs)  # type: ignore
             season_scales.append(s)
             trend_scales.append(t)
 
         emb_scales = [self.embedding(xs, None) for xs in x_scales]
         season_emb = [self.embedding(s, None) for s in season_scales]
-        trend_emb  = [self.embedding(t, None) for t in trend_scales]
+        trend_emb = [self.embedding(t, None) for t in trend_scales]
 
         out_list = None
-        for pdm in self.pdm_blocks: # type: ignore
+        for pdm in self.pdm_blocks:  # type: ignore
             out_list = pdm(emb_scales, season_emb, trend_emb)
 
-        encoded = [enc(out_list[i]) for i, enc in enumerate(self.scale_encoders)] # type: ignore
+        encoded = [enc(out_list[i]) for i, enc in enumerate(self.scale_encoders)]  # type: ignore
+
+        if return_decomp:
+            return {
+                "encoded": encoded,
+                "x_scales": x_scales,
+                "season_scales": season_scales,
+                "trend_scales": trend_scales,
+            }
+
         return encoded

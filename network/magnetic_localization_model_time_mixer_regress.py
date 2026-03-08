@@ -67,12 +67,36 @@ class MagneticLocalizationTimeMixer(nn.Module):
             nn.Linear(self.feature_dim, output_dim),
         )
 
-    def forward(self, x):
+    # def forward(self, x):
+    #     """
+    #     x: (B, T, input_dim)
+    #     return: coords, attn_weights  # attn_weights 是多尺度权重
+    #     """
+    #     # 保证输入长度为固定 seq_len（你训练时可以先 pad/截断一遍）
+    #     if x.size(1) != self.seq_len:
+    #         if x.size(1) > self.seq_len:
+    #             x = x[:, -self.seq_len:, :]
+    #         else:
+    #             pad = self.seq_len - x.size(1)
+    #             x = torch.nn.functional.pad(x, (0, 0, 0, pad))
+
+    #     # denoised = self.dae(x)
+    #     # normed = self.layer_norm(x)
+
+
+    #     scale_features = self.timemixer_encoder(x)  # list of (B, feature_dim)
+    #     fused, attn_weights = self.attention_fusion(scale_features)
+
+    #     coords = self.localization_head(fused)
+    #     return coords, attn_weights
+
+    def forward(self, x, return_decomp: bool = False):
         """
-        x: (B, T, input_dim)
-        return: coords, attn_weights  # attn_weights 是多尺度权重
+        默认:
+            return coords, attn_weights
+        可视化时:
+            return coords, attn_weights, decomp_dict
         """
-        # 保证输入长度为固定 seq_len（你训练时可以先 pad/截断一遍）
         if x.size(1) != self.seq_len:
             if x.size(1) > self.seq_len:
                 x = x[:, -self.seq_len:, :]
@@ -80,11 +104,16 @@ class MagneticLocalizationTimeMixer(nn.Module):
                 pad = self.seq_len - x.size(1)
                 x = torch.nn.functional.pad(x, (0, 0, 0, pad))
 
-        # denoised = self.dae(x)
-        # normed = self.layer_norm(x)
+        if return_decomp:
+            encoder_out = self.timemixer_encoder(x, return_decomp=True)
+            scale_features = encoder_out["encoded"]
+        else:
+            scale_features = self.timemixer_encoder(x)
+            encoder_out = None
 
-        scale_features = self.timemixer_encoder(x)  # list of (B, feature_dim)
         fused, attn_weights = self.attention_fusion(scale_features)
-
         coords = self.localization_head(fused)
+
+        if return_decomp:
+            return coords, attn_weights, encoder_out
         return coords, attn_weights
