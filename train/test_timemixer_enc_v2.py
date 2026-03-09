@@ -46,6 +46,7 @@ def test(
             y = batch["y"].to(device, non_blocking=True).float()
 
             preds, _ = model(x)
+            print("attn_weights.shape =", _.shape)
             loss = criterion(preds, y)
 
             bs = x.size(0)
@@ -112,22 +113,22 @@ def test(
         "num_samples": total_samples,
     }
     
-    # 先写指标，再写明细
-    with open(output_csv, "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f)
-        w.writerow(["metric", "value"])
-        for k, v in metrics.items():
-            w.writerow([k, v])
-        w.writerow([])  # 空行分隔
-        results_df.to_csv(f, index=False)
+    # # 先写指标，再写明细
+    # with open(output_csv, "w", newline="", encoding="utf-8") as f:
+    #     w = csv.writer(f)
+    #     w.writerow(["metric", "value"])
+    #     for k, v in metrics.items():
+    #         w.writerow([k, v])
+    #     w.writerow([])  # 空行分隔
+    #     results_df.to_csv(f, index=False)
 
-    print(f"结果已保存到: {output_csv}")
+    # print(f"结果已保存到: {output_csv}")
 
 
 if __name__ == "__main__":
 
     test_dir = Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter-v2" / "test3"
-    ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20260226_2158_rmse_2d_2.504_sample_0_wenguan.pt"
+    ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20260112_1405_rmse_2d_1.129_wenguan.pt"
     res_dir = Path("runs") / "loc_res" / "time_mixer"
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -145,7 +146,7 @@ if __name__ == "__main__":
         d_model=128,
         seq_len=128,
         down_sampling_window=2,
-        down_sampling_layers=0,
+        down_sampling_layers=2,
         num_pdm_blocks=2,
         moving_avg_kernel=11, 
         nhead=8,

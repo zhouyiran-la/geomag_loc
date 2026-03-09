@@ -9,47 +9,38 @@ plt.style.use("seaborn-v0_8-whitegrid")
 plt_rc = matplotlib.rcParams
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT_PATH = ROOT / "plot" / "output" / "seq_num2.png"
+OUTPUT_PATH = ROOT / "plot" / "output" / "seq_num_new.png"
 
 # 字体
 plt_rc["font.family"] = ["Times New Roman", "SimHei", "Microsoft YaHei"]
 plt_rc["axes.unicode_minus"] = False
 
 plt_rc.update({
-    "axes.labelsize": 13,
-    "axes.titlesize": 13,
-    "xtick.labelsize": 11,
-    "ytick.labelsize": 11,
-    "legend.fontsize": 11,
-    "lines.linewidth": 1.6,
+    "axes.labelsize": 15,
+    "axes.titlesize": 15,
+    "xtick.labelsize": 13,
+    "ytick.labelsize": 13,
+    "legend.fontsize": 13,
+    "lines.linewidth": 2.0,
     "grid.alpha": 0.4,
     "axes.edgecolor": "0.25",
-    "axes.linewidth": 0.8,
+    "axes.linewidth": 1.5,
 })
 
 # ===== 数据 =====
-bar_width = 0.1
-groups = ['序列长度=32', '序列长度=64', "序列长度=128", "序列长度=256"]
+bar_width = 0.06
+groups = ['信息学馆-路径1', '信息学馆-路径2', '文管学馆-路径1']
 values = [
-    [1.27, 1.01, 0.94, 0.88],
-    [1.14, 0.93, 0.68, 0.70],
-    [1.19, 0.73, 0.52, 0.48],
+    [4.02, 3.62, 7.50],
+    [1.11, 1.37, 2.93],
+    [0.68, 0.78, 0.82],
+    [0.70, 0.74, 0.77],
 ]
-labels = ['采样层数=0', '采样层数=1', '采样层数=2']
+labels = ['序列长度=32', '序列长度=64', '序列长度=128', "序列长度=256"]
 
-# groups = ['测试路线1', '测试路线2']
-# values = [
-#     [1.19, 1.23],
-#     [0.73, 0.92],
-#     [0.52, 0.61],
-#     [0.48, 0.66],
-# ]
-# labels = ['序列长度=32', '序列长度=64', '序列长度=128', "序列长度=256"]
-
-# 每组中心
-x_group = np.array([0, 0.6, 1.2, 1.8])
-# x_group = np.array([0, 0.75])
-category_num = 3
+# 每组中心（按组数量自动生成，组间距略缩小）
+x_group = np.arange(len(groups)) * 0.3
+category_num = len(values)
 offsets = np.linspace(
     - (category_num - 1) * bar_width / 2,
     + (category_num - 1) * bar_width / 2,
@@ -60,21 +51,22 @@ offsets = np.linspace(
 #   "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"
 # ]
 
-# colors = [
-#   "#EAEAEA",  # light gray
-#   "#C8DFFF",  # soft sky blue
-#   "#CCCCCC",  # medium gray
-#   "#6E9FD8",  # steel blue
-# ]
-
 colors = [
-#   "#EAEAEA",  # light gray
-  "#FDE4AD",  # soft sky blue
-  "#D1EDF3",  # medium gray
-  "#FCD7D4",  # steel blue
+  "#EAEAEA",  # light gray
+  "#C8DFFF",  # soft sky blue
+  "#CCCCCC",  # medium gray
+  "#7EA4D3",  # steel blue
 ]
 
-plt.figure(figsize=(10, 6))
+# colors = [
+# #   "#EAEAEA",  # light gray
+#     "#FFC300",
+#   "#FDE4AD",  # soft sky blue
+#   "#D1EDF3",  # medium gray
+#   "#FCD7D4",  # steel blue
+# ]
+
+plt.figure(figsize=(8, 7))
 
 for i in range(category_num):
     bar_positions = x_group + offsets[i]
@@ -104,9 +96,9 @@ for i in range(category_num):
 # 坐标轴
 plt.xticks(x_group, groups)
 plt.ylabel("平均定位误差(m)")
-plt.ylim(0, 1.5)
+plt.ylim(0, 8)
 
-plt.legend(title="", loc='upper right')
+plt.legend(title="", loc='best')
 plt.grid(True, linestyle="--", linewidth=0.5, alpha=0.5)
 plt.tight_layout()
 plt.savefig(OUTPUT_PATH, dpi=600)

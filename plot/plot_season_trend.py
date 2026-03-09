@@ -1,14 +1,14 @@
-import math
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-import numpy as np
 import torch
-
+from typing import Optional
 from datasets import create_magnetic_dataset_v2_dataloaders
 from datasets.utils import build_transform
 from network.magnetic_localization_model_time_mixer_regress import MagneticLocalizationTimeMixer
+from plot.utils.plot_style import setup_plot_season_trend_style, style_axis, save_figure
 
+setup_plot_season_trend_style()
 
 def extract_multiscale_decomposition(model, x: torch.Tensor):
     """
@@ -56,55 +56,73 @@ def plot_multiscale_decomposition(
     batch_idx: int = 0,
     channel_idx: int = 0,
     show: bool = False,
+    suptitle: Optional[str] = None
 ):
-    """
-    对某一个通道，画所有尺度:
-      Original / Trend / Seasonal / Residual
-    """
     x_scales = decomp_dict["x_scales"]
     season_scales = decomp_dict["season_scales"]
     trend_scales = decomp_dict["trend_scales"]
 
     num_scales = len(x_scales)
 
+    base = 3.3   # 单个子图边长
     fig, axes = plt.subplots(
         nrows=num_scales,
-        ncols=4,
-        figsize=(18, 3.8 * num_scales),
+        ncols=3,
+        figsize=(3 * base, num_scales * base),
         squeeze=False,
     )
-
+    # for ax in axes.flat:
+    #     ax.margins(x=0)
     for i in range(num_scales):
         x_i = x_scales[i][batch_idx, :, channel_idx].detach().cpu().numpy()
         s_i = season_scales[i][batch_idx, :, channel_idx].detach().cpu().numpy()
         t_i = trend_scales[i][batch_idx, :, channel_idx].detach().cpu().numpy()
-        r_i = x_i - (s_i + t_i)
+
+        # 只有最后一行显示 x label
+        xlabel = "序号" if i == num_scales - 1 else None
+
+        # 只有最左列显示 y label
+        ylabel0 = "值"
+        ylabel1 = None
+        ylabel2 = None
 
         axes[i, 0].plot(x_i)
-        axes[i, 0].set_title(f"Scale {i} - Original (len={len(x_i)})")
-        axes[i, 0].grid(True, alpha=0.3)
+        style_axis(
+            axes[i, 0],
+            title=f"Scale {i}: Original",
+            xlabel=xlabel, # type: ignore
+            ylabel=ylabel0,
+        )
 
         axes[i, 1].plot(t_i)
-        axes[i, 1].set_title(f"Scale {i} - Trend")
-        axes[i, 1].grid(True, alpha=0.3)
+        style_axis(
+            axes[i, 1],
+            title=f"Scale {i}: Trend",
+            xlabel=xlabel, # type: ignore
+            ylabel=ylabel1, # type: ignore
+        )
 
         axes[i, 2].plot(s_i)
-        axes[i, 2].set_title(f"Scale {i} - Seasonal")
-        axes[i, 2].grid(True, alpha=0.3)
+        style_axis(
+            axes[i, 2],
+            title=f"Scale {i}: Seasonal",
+            xlabel=xlabel, # type: ignore
+            ylabel=ylabel2, # type: ignore
+        )
 
-        axes[i, 3].plot(r_i)
-        axes[i, 3].set_title(f"Scale {i} - Residual")
-        axes[i, 3].grid(True, alpha=0.3)
+    if suptitle is not None:
+        fig.suptitle(suptitle, fontsize=16, y=0.985)
 
-    plt.tight_layout()
-    save_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(save_path, dpi=200, bbox_inches="tight")
-    print(f"分解图已保存到: {save_path}")
+    fig.subplots_adjust(
+        left=0.06,
+        right=0.99,
+        bottom=0.06,
+        top=0.94,
+        hspace=0.25,
+        wspace=0.15,
+    )
 
-    if show:
-        plt.show()
-    else:
-        plt.close(fig)
+    save_figure(fig, save_path, show=show, tight=False)
 
 
 def plot_one_scale_all_channels(
@@ -113,55 +131,72 @@ def plot_one_scale_all_channels(
     scale_idx: int = 0,
     batch_idx: int = 0,
     show: bool = False,
+    suptitle: Optional[str] = None
 ):
-    """
-    对某一个尺度，画所有通道:
-      Original / Trend / Seasonal / Residual
-    """
     x = decomp_dict["x_scales"][scale_idx][batch_idx].detach().cpu().numpy()        # (L, C)
     s = decomp_dict["season_scales"][scale_idx][batch_idx].detach().cpu().numpy()
     t = decomp_dict["trend_scales"][scale_idx][batch_idx].detach().cpu().numpy()
-    r = x - (s + t)
 
     num_channels = x.shape[1]
 
+    base = 3.3   # 单个子图边长
     fig, axes = plt.subplots(
         nrows=num_channels,
-        ncols=4,
-        figsize=(18, 3.6 * num_channels),
+        ncols=3,
+        figsize=(3 * base, num_channels * base),
         squeeze=False,
     )
 
     for c in range(num_channels):
+        # 只有最后一行显示 x label
+        xlabel = "序号" if c == num_channels - 1 else None
+
+        # 只有最左列显示 y label
+        ylabel0 = "值"
+        ylabel1 = None
+        ylabel2 = None
+
         axes[c, 0].plot(x[:, c])
-        axes[c, 0].set_title(f"Channel {c} - Original")
-        axes[c, 0].grid(True, alpha=0.3)
+        style_axis(
+            axes[c, 0],
+            title=f"Channel {c}: Original",
+            xlabel=xlabel,  # type: ignore
+            ylabel=ylabel0,
+        )
 
         axes[c, 1].plot(t[:, c])
-        axes[c, 1].set_title(f"Channel {c} - Trend")
-        axes[c, 1].grid(True, alpha=0.3)
+        style_axis(
+            axes[c, 1],
+            title=f"Channel {c}: Trend",
+            xlabel=xlabel,  # type: ignore
+            ylabel=ylabel1,  # type: ignore
+        )
 
         axes[c, 2].plot(s[:, c])
-        axes[c, 2].set_title(f"Channel {c} - Seasonal")
-        axes[c, 2].grid(True, alpha=0.3)
+        style_axis(
+            axes[c, 2],
+            title=f"Channel {c}: Seasonal",
+            xlabel=xlabel,  # type: ignore
+            ylabel=ylabel2,  # type: ignore
+        )
 
-        axes[c, 3].plot(r[:, c])
-        axes[c, 3].set_title(f"Channel {c} - Residual")
-        axes[c, 3].grid(True, alpha=0.3)
+    if suptitle is not None:
+        fig.suptitle(suptitle, fontsize=16, y=0.985)
 
-    plt.tight_layout()
-    save_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(save_path, dpi=200, bbox_inches="tight")
-    print(f"单尺度全通道图已保存到: {save_path}")
+    fig.subplots_adjust(
+        left=0.06,
+        right=0.99,
+        bottom=0.06,
+        top=0.94,
+        hspace=0.25,
+        wspace=0.15,
+    )
 
-    if show:
-        plt.show()
-    else:
-        plt.close(fig)
+    save_figure(fig, save_path, show=show, tight=False)
 
 
 def main():
-    test_dir = Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter-v2" / "test1"
+    test_dir = Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-zscore" / "test1"
     ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20260123_2059_rmse_2d_1.000_256_wenguan.pt"
     res_dir = Path("plot") / "output" / "decomp_plots"
 
@@ -232,21 +267,21 @@ def main():
             f"trend={tuple(t.shape)}"
         )
 
-    # # 画第一个样本、第0通道，在所有尺度上的分解
-    # plot_multiscale_decomposition(
-    #     decomp_dict=decomp_dict,
-    #     save_path=res_dir / "multiscale_decomp_channel0.png",
-    #     batch_idx=0,
-    #     channel_idx=0,
-    #     show=False,
-    # )
+    # 画第一个样本、第0通道，在所有尺度上的分解
+    plot_multiscale_decomposition(
+        decomp_dict=decomp_dict,
+        save_path=res_dir / "multiscale_decomp_channel0_wenguan_test1_256_2.png",
+        batch_idx=12,
+        channel_idx=0,
+        show=False,
+    )
 
     # 画第0个尺度上，所有通道的分解
     plot_one_scale_all_channels(
         decomp_dict=decomp_dict,
-        save_path=res_dir / "scale0_all_channels_test1.png",
+        save_path=res_dir / "scale0_all_channels_wenguan_test1.png",
         scale_idx=0,
-        batch_idx=0,
+        batch_idx=12,
         show=False,
     )
 
