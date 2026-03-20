@@ -4,7 +4,7 @@ import matplotlib
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
-
+import matplotlib.font_manager as fm
 
 def setup_plot_equal_style():
     """
@@ -12,20 +12,25 @@ def setup_plot_equal_style():
     在每个绘图脚本开头调用一次即可。
     """
     plt.style.use("seaborn-v0_8-whitegrid")
-    plt_rc = matplotlib.rcParams
-    plt_rc["font.family"] = ["Noto Sans CJK JP", "DejaVu Sans"]
-    plt_rc["axes.unicode_minus"] = False
-    plt_rc.update({
-        "axes.labelsize": 15,
-        "axes.titlesize": 15,
-        "xtick.labelsize": 13,
-        "ytick.labelsize": 13,
-        "legend.fontsize": 13,
+
+    matplotlib.rcParams["font.family"] = "sans-serif"
+    matplotlib.rcParams["font.sans-serif"] = [
+       "Source Han Sans SC"
+    ]
+    matplotlib.rcParams["axes.unicode_minus"] = False
+
+    matplotlib.rcParams.update({
+        
+        "axes.labelsize": 13,
+        "axes.titlesize": 13,
+        "xtick.labelsize": 11,
+        "ytick.labelsize": 11,
+        "legend.fontsize": 11,
         "lines.linewidth": 2.0,
         "grid.alpha": 0.4,
         "axes.edgecolor": "0.25",
         "axes.linewidth": 1.5,
-        "savefig.dpi": 300,
+        "savefig.dpi": 600,
         "figure.dpi": 150,
     })
 

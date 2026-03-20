@@ -46,7 +46,7 @@ def test(
             y = batch["y"].to(device, non_blocking=True).float()
 
             preds, _ = model(x)
-            print("attn_weights.shape =", _.shape)
+            # print("attn_weights.shape =", _.shape)
             loss = criterion(preds, y)
 
             bs = x.size(0)
@@ -90,7 +90,7 @@ def test(
             f"mean_l1={mean_l1:.3f} mean_l2={mean_l2:.3f} rmse_x={rmse_x:.3f} rmse_y={rmse_y:.3f} rmse_2d={rmse_2d:.3f}")
     
     res_dir.mkdir(parents=True, exist_ok=True)
-    file_name = f"2158_wenguan_test3_sample_0_loc_res_meanerr_{mean_l2:.4f}.csv"
+    file_name = f"1817_xinxi_test8_loc_res_meanerr_{mean_l2:.4f}.csv"
     output_csv = res_dir / file_name
 
     results_df = pd.DataFrame(
@@ -113,23 +113,26 @@ def test(
         "num_samples": total_samples,
     }
     
-    # # 先写指标，再写明细
-    # with open(output_csv, "w", newline="", encoding="utf-8") as f:
-    #     w = csv.writer(f)
-    #     w.writerow(["metric", "value"])
-    #     for k, v in metrics.items():
-    #         w.writerow([k, v])
-    #     w.writerow([])  # 空行分隔
-    #     results_df.to_csv(f, index=False)
+    # 先写指标，再写明细
+    with open(output_csv, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["metric", "value"])
+        for k, v in metrics.items():
+            w.writerow([k, v])
+        w.writerow([])  # 空行分隔
+        results_df.to_csv(f, index=False)
 
-    # print(f"结果已保存到: {output_csv}")
+    print(f"结果已保存到: {output_csv}")
 
 
 if __name__ == "__main__":
 
-    test_dir = Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter-v2" / "test3"
-    ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20260112_1405_rmse_2d_1.129_wenguan.pt"
-    res_dir = Path("runs") / "loc_res" / "time_mixer"
+    test_dir = Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "test8"
+    ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20260116_1817_rmse_2d_0.967_128_xinxi.pt"
+
+    # test_dir = Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "test1"
+    # ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20260215_2230_rmse_2d_1.199_trend_only_xinxi.pt"
+    res_dir = Path("runs") / "loc_res" / "time_mixer_different_phone_xinxi_2"
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     batch_size = 16

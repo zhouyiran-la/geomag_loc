@@ -53,17 +53,17 @@ def plot_grouped_mean_attention_heatmap(
     """
     data = grouped_attn.detach().cpu().numpy()
 
-    plt.figure(figsize=(7, max(4, 0.45 * data.shape[0])))
+    plt.figure(figsize=(7, max(5, 0.45 * data.shape[0])))
     im = plt.imshow(data, aspect="auto")
-    plt.colorbar(im, label="Mean Attention Weight")
+    plt.colorbar(im)
 
-    plt.xlabel("Scale")
-    plt.ylabel("Sample Group")
-    plt.title(title)
+    # plt.xlabel("Scale")
+    # plt.ylabel("Sample Group")
+    # plt.title(title)
 
     plt.xticks(
         np.arange(data.shape[1]),
-        [f"Scale {i}" for i in range(data.shape[1])]
+        [f"尺度 {i}" for i in range(data.shape[1])]
     )
     plt.yticks(
         np.arange(data.shape[0]),
@@ -110,16 +110,16 @@ def plot_overall_mean_attention_heatmap(
 
 
 def main():
-    save_dir = Path("plot") / "output" / "attention"
+    save_dir = Path("figures") / "attention"
     # test_dir = Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter-v2" / "test1"
     # ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20260112_1405_rmse_2d_1.129_wenguan.pt"
     
-    test_dir = Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "test1"
+    test_dir = Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "test5"
     ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20260208_2141_rmse_2d_1.109_tcn_xinxi.pt"
 
     
-    grouped_heatmap_path = save_dir / "grouped_mean_attention_heatmap_xinxi_test1.png"
-    overall_heatmap_path = save_dir / "overall_mean_attention_heatmap_xinxi_test1.png"
+    grouped_heatmap_path = save_dir / "grouped_mean_attention_heatmap_xinxi_test5.png"
+    overall_heatmap_path = save_dir / "overall_mean_attention_heatmap_xinxi_test5.png"
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     batch_size = 16
