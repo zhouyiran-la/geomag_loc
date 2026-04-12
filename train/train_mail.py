@@ -133,7 +133,7 @@ def main():
 
     batch_size = 32
     lr = 5e-4
-    epochs = 400
+    epochs = 500
     weight_decay = 3e-4
     num_workers = 2 if device.type == "cuda" else 0
     pin_memory = device.type == "cuda"
@@ -168,7 +168,7 @@ def main():
     model = MAIL(
         input_dim=3,
         seq_len=128,
-        scale_lengths=(32, 64, 128),
+        scale_lengths=(64, 128),
         gru_hidden=128,
         proj_dim=64,
         attn_hidden=128,

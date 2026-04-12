@@ -6,24 +6,10 @@ import numpy as np
 import pandas as pd
 from typing import cast
 
-matplotlib.use("Agg")
-plt.style.use("seaborn-v0_8-whitegrid")
-plt_rc = matplotlib.rcParams
-plt_rc["font.family"] = ["Times New Roman", "SimHei", "Microsoft YaHei"]
-plt_rc["axes.unicode_minus"] = False
-plt_rc.update(
-    {
-        "axes.labelsize": 13,
-        "axes.titlesize": 13,
-        "xtick.labelsize": 11,
-        "ytick.labelsize": 11,
-        "legend.fontsize": 11,
-        "lines.linewidth": 1.6,
-        "grid.alpha": 0.4,
-        "axes.edgecolor": "0.25",
-        "axes.linewidth": 0.8,
-    }
-)
+from plot.utils.plot_style import setup_plot_resample_style, style_axis, save_figure
+
+setup_plot_resample_style()
+# ROOT = Path(__file__).resolve().parents[1]
 
 # 路径列表（按需手动调整）
 RAW_PATH_LIST = [
@@ -36,9 +22,9 @@ RESAMPLE_PATH_LIST = [
     Path("data/origin/4.26数据/50/resample/data_with_label_wqh快速_T_resample.csv"),
     Path("data/origin/4.26数据/50/resample/data_with_label_ghw匀速_T_resample.csv"),
 ]
-LABELS = ["ghw加速", "wqh快速", "ghw匀速"]
-# PALETTE = ["#1C3885", "#F4A25C", "#DD542F"]
-OUTPUT_DIR = Path("plot/resample")
+LABELS = ["匀速", "快速", "慢速"]
+PALETTE = ["#A9CA70", "#C5D6F0", "#e6b745","#F18C54" "#d0dd97", "#dddddd", "#e6b745"]
+OUTPUT_DIR = Path("figures")
 
 
 def _ensure_output_dir() -> None:
@@ -52,25 +38,35 @@ def _to_numeric_series(series: pd.Series) -> pd.Series:
 
 def plot_raw_geomagneticx(files: list[Path], out_path: Path) -> None:
     """绘制原始地磁模值序列（geomagneticx 列，横轴为样本序号，单位：μT）。"""
-    plt.figure(figsize=(12, 6))
+    plt.figure(figsize=(8, 7))
     for index, csv_path in enumerate(files):
         df = pd.read_csv(csv_path)
         magx = _to_numeric_series(df["geomagneticx"]).to_numpy()
         x = np.arange(len(magx))
-        plt.plot(x, magx, label=LABELS[index], linewidth=1.2)
+        plt.plot(x, magx, label=LABELS[index], color=PALETTE[index])
 
-    plt.xlabel("样本序号", labelpad=6)
-    plt.ylabel("地磁模值 (μT)", labelpad=6)
-    plt.grid(True, linestyle="--", linewidth=0.5, alpha=0.5)
+    plt.tick_params(
+        axis='both',        # x 和 y 轴
+        which='major',      # 主刻度
+        direction='in',     # 刻度线向内
+        length=5,           # 刻度线长度
+        width=1
+    )
+    # plt.xlim(-200, 6000)
+    plt.ylim(0, 82)
+    plt.xlabel("样本序号")
+    plt.ylabel("地磁模值 (μT)")
+    
+    plt.grid(False)
     plt.legend(loc="best", frameon=False)
     plt.tight_layout()
-    plt.savefig(out_path)
+    plt.savefig(out_path, dpi=300)
     plt.close()
 
 
 def plot_resampled_geomagneticx(files: list[Path], out_path: Path) -> None:
     """绘制空间重采样后的地磁模值序列（横轴为距离，单位：米；纵轴单位：μT）。"""
-    plt.figure(figsize=(12, 6))
+    plt.figure(figsize=(8, 7))
     for index, csv_path in enumerate(files):
         df = pd.read_csv(csv_path)
         xs = _to_numeric_series(df["pos_x"]).to_numpy()
@@ -82,14 +78,23 @@ def plot_resampled_geomagneticx(files: list[Path], out_path: Path) -> None:
         ds = np.sqrt(dx**2 + dy**2)
         s = np.insert(np.cumsum(ds), 0, 0.0)
 
-        plt.plot(s, magx, label=LABELS[index], linewidth=1.2)
+        plt.plot(s, magx, label=LABELS[index], color=PALETTE[index])
 
-    plt.xlabel("距离 (m)", labelpad=6)
-    plt.ylabel("地磁模值 (μT)", labelpad=6)
-    plt.grid(True, linestyle="--", linewidth=0.5, alpha=0.5)
+    plt.tick_params(
+        axis='both',        # x 和 y 轴
+        which='major',      # 主刻度
+        direction='in',     # 刻度线向内
+        length=5,           # 刻度线长度
+        width=1
+    )
+    plt.xlim(-12, 180)
+    plt.ylim(0, 82)
+    plt.xlabel("距离 (m)")
+    plt.ylabel("地磁模值 (μT)")
+    plt.grid(False)
     plt.legend(loc="best", frameon=False)
     plt.tight_layout()
-    plt.savefig(out_path)
+    plt.savefig(out_path, dpi=300)
     plt.close()
 
 
@@ -99,8 +104,8 @@ def main():
     raw_files = [p for p in RAW_PATH_LIST if p.exists()]
     resample_files = [p for p in RESAMPLE_PATH_LIST if p.exists()]
 
-    raw_out = OUTPUT_DIR / "raw_geomagneticx_3.png"
-    resample_out = OUTPUT_DIR / "resample_geomagneticx_3.png"
+    raw_out = OUTPUT_DIR / "raw_geomagneticx_3.svg"
+    resample_out = OUTPUT_DIR / "resample_geomagneticx_3.svg"
 
     if raw_files:
         plot_raw_geomagneticx(raw_files, raw_out)

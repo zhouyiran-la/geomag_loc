@@ -7,49 +7,35 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.ticker import AutoMinorLocator
 
-# ================== matplotlib 样式 ==================
-matplotlib.use("Agg")
-plt.style.use("seaborn-v0_8-whitegrid")
-plt_rc = matplotlib.rcParams
-plt_rc["font.family"] = ["Noto Sans CJK JP", "DejaVu Sans"]
-plt_rc["axes.unicode_minus"] = False
-plt_rc.update({
-    "axes.labelsize": 15,
-    "axes.titlesize": 15,
-    "xtick.labelsize": 13,
-    "ytick.labelsize": 13,
-    "legend.fontsize": 13,
-    "lines.linewidth": 2.0,
-    "grid.alpha": 0.4,
-    "axes.edgecolor": "0.25",
-    "axes.linewidth": 1.5,
-})
+from plot.utils.plot_style import setup_plot_cdf_style
+
+setup_plot_cdf_style()
 
 # ================== 路径配置 ==================
 ROOT = Path(__file__).resolve().parents[1]
 
 CSV_PATHS = [
-    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "1405_wenguan_test3_season+trend_loc_res_meanerr_0.8808.csv",
-    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "1759_wenguan_test1_no_mix_no_decompose_loc_res_meanerr_1.1121.csv",
-    # ROOT / "runs" / "loc_res" / "time_mixer" / "0028_wenguan_test1_trend_loc_res_meanerr_1.4801.csv",
-    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "0028_wenguan_test2_trend_loc_res_meanerr_1.2151.csv",
-    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "0051_wenguan_test2_no_decompose_loc_res_meanerr_1.6449.csv",
-    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "1317_wenguan_test1_no_decompose_loc_res_meanerr_1.7089.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "1405_wenguan_test3_season+trend_loc_res_meanerr_0.8808.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "1759_wenguan_test1_no_mix_no_decompose_loc_res_meanerr_1.1121.csv",
+    # # ROOT / "runs" / "loc_res" / "time_mixer" / "0028_wenguan_test1_trend_loc_res_meanerr_1.4801.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "0028_wenguan_test2_trend_loc_res_meanerr_1.2151.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "0051_wenguan_test2_no_decompose_loc_res_meanerr_1.6449.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "1317_wenguan_test1_no_decompose_loc_res_meanerr_1.7089.csv",
     
-    # ROOT / "runs" / "loc_res" / "time_mixer" / "2141_xinxi_test2_season+trend_loc_res_meanerr_0.6825.csv",
-    # ROOT / "runs" / "loc_res" / "time_mixer" / "0012_xinxi_test3_no_mix_loc_res_meanerr_0.8363.csv",
-    # ROOT / "runs" / "loc_res" / "time_mixer" / "2302_xinxi_test1_trend_only_loc_res_meanerr_0.8995.csv",
-    # ROOT / "runs" / "loc_res" / "time_mixer" / "2322_xinxi_test3_trend_only_loc_res_meanerr_1.2581.csv",
-    # # ROOT / "runs" / "loc_res" / "time_mixer" / "2322_xinxi_test3_trend_only_loc_res_meanerr_1.2581.csv",
-    # ROOT / "runs" / "loc_res" / "time_mixer" / "2333_xinxi_test1_no_decompose_loc_res_meanerr_1.5111.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_xinxi" / "2141_xinxi_test2_season+trend_loc_res_meanerr_0.6825.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_xinxi" / "0012_xinxi_test3_no_mix_loc_res_meanerr_0.8363.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_xinxi" / "2302_xinxi_test1_trend_only_loc_res_meanerr_0.8995.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_xinxi" / "2322_xinxi_test3_trend_only_loc_res_meanerr_1.2581.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_xinxi" / "2322_xinxi_test3_trend_only_loc_res_meanerr_1.2581.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_xinxi" / "2333_xinxi_test1_no_decompose_loc_res_meanerr_1.5111.csv",
 
 ]
 
 LABELS = [
-    "Season_Trend", "Season_Trend_No_Mixed", "Trend_Only", "Season_Only" , "No_Decompose"
+    "Season-Trend", "Season-Trend-No-Mixed", "Trend-Only", "Season-Only" , "No-Decompose"
 ]
 
-OUTPUT_PATH = ROOT / "plot" / "output" / "loc_error_boxplot_feature_group_wenguan.png"
+OUTPUT_PATH = ROOT / "figures" / "loc_error_boxplot_feature_group_xinxi.svg"
 Y_MAX = None  # 可手动设上限，如 6.0
 
 # ================== 读取误差 ==================
@@ -117,8 +103,14 @@ def main():
 
     positions = np.arange(1, len(all_errors) + 1)
 
+    flier_style = dict(
+        marker='o', 
+        markerfacecolor='black', 
+        markeredgecolor='none', 
+        markersize=4, 
+    )
     plt.figure(figsize=(10, 8))
-
+    
     # -------- 箱线图 --------
     plt.boxplot(
         all_errors,
@@ -126,7 +118,12 @@ def main():
         widths=0.55,
         whis=1.5,
         showfliers=True,
-        patch_artist=False,
+        patch_artist=True,
+        flierprops=flier_style,
+        boxprops=dict(facecolor='#AED6F1', linewidth=1.5),
+        medianprops=dict(color="#B5711E", linewidth=1.5),
+        whiskerprops=dict(linewidth=1.5),
+        capprops=dict(linewidth=1.5)
     )
 
     # -------- 均值点 --------
@@ -136,27 +133,26 @@ def main():
         marker="o",
         s=40,
         zorder=3,
-        label="Mean",
+        label="均值",
     )
 
     plt.ylabel("定位误差（m）")
     plt.xticks(positions, used_labels, rotation=15)
-    plt.grid(True, linestyle="--", linewidth=0.5, alpha=0.5)
+    plt.grid(False)
 
     ax = plt.gca()
-    ax.yaxis.set_minor_locator(AutoMinorLocator(4))
+    ax.yaxis.set_minor_locator(AutoMinorLocator(2))
     ax.xaxis.set_minor_locator(AutoMinorLocator(2))
     ax.tick_params(axis="both", which="major", direction="in", length=6, width=0.8)
     ax.tick_params(axis="both", which="minor", direction="in", length=3, width=0.6)
 
-    y_min = 0.0
-    y_max = Y_MAX if Y_MAX is not None else y_max_seen * 1.10
-    plt.ylim(y_min, 22.9)
+    
+    plt.ylim(0, 22)
 
     plt.legend(loc="upper right")
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     plt.tight_layout()
-    plt.savefig(OUTPUT_PATH, dpi=600)
+    plt.savefig(OUTPUT_PATH, dpi=300)
     plt.close()
 
     print(f"Saved boxplot with mean to {OUTPUT_PATH.resolve()}")

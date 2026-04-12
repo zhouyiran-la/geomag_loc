@@ -128,7 +128,7 @@ def main():
 
     batch_size = 32
     lr = 5e-4
-    epochs = 300
+    epochs = 400
     weight_decay = 3e-4
     num_workers = 2 if device.type == "cuda" else 0
     pin_memory = device.type == "cuda"
@@ -163,13 +163,13 @@ def main():
     model = MagneticLocalizationModelFast(
         input_dim=3,
         d_model=64,
-        scales=[64, 128, 256],
+        scales=[64, 128],
         nhead=8,
-        num_layers=3,
+        num_layers=2,
         output_dim=2,
     ).to(device)
 
-    criterion = WeightedSmoothL1(beta=0.05, w_x=1.0, w_y=1.3).to(device)
+    criterion = WeightedSmoothL1(beta=0.05, w_x=1.0, w_y=1.5).to(device)
     optimizer = Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     scheduler = CosineAnnealingLR(optimizer, T_max=epochs, eta_min=1e-6)
 

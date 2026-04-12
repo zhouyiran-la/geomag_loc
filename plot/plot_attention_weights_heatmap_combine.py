@@ -225,7 +225,7 @@ def main():
         grouped_list.append(grouped_attn)
         titles.append(cfg["title"])        # type: ignore
 
-    save_path = Path("figures") / "attention" / "grouped_mean_attention_combined.png"
+    save_path = Path("figures") / "attention" / "grouped_mean_attention_combined.svg"
     plot_three_grouped_attention_heatmaps(
         grouped_list=grouped_list,
         titles=[

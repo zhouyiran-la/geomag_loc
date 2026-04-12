@@ -90,7 +90,7 @@ def test(
             f"mean_l1={mean_l1:.3f} mean_l2={mean_l2:.3f} rmse_x={rmse_x:.3f} rmse_y={rmse_y:.3f} rmse_2d={rmse_2d:.3f}")
     
     res_dir.mkdir(parents=True, exist_ok=True)
-    file_name = f"1817_xinxi_test8_loc_res_meanerr_{mean_l2:.4f}.csv"
+    file_name = f"2131_xinxi_test4_loc_res_meanerr_{mean_l2:.4f}.csv"
     output_csv = res_dir / file_name
 
     results_df = pd.DataFrame(
@@ -127,12 +127,12 @@ def test(
 
 if __name__ == "__main__":
 
-    test_dir = Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "test8"
-    ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20260116_1817_rmse_2d_0.967_128_xinxi.pt"
+    test_dir = Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "test4"
+    ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20260403_2131_rmse_2d_1.117_xinxi.pt"
 
     # test_dir = Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "test1"
     # ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20260215_2230_rmse_2d_1.199_trend_only_xinxi.pt"
-    res_dir = Path("runs") / "loc_res" / "time_mixer_different_phone_xinxi_2"
+    res_dir = Path("runs") / "loc_res" / "different_posture_xinxi"
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     batch_size = 16

@@ -36,86 +36,29 @@ plt_rc.update(
 # 📁 路径设置
 # ---------------------------------------------------------
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-OUTPUT_DIR = Path(__file__).resolve().parent / "output"
+OUTPUT_DIR = Path(__file__).resolve().parent / "figures"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------
 # 📊 数据集配置（保持与原脚本完全一致）
 # ---------------------------------------------------------
 DATASETS: Iterable[Tuple[str, Path,]] = (
-    # (
-    #     "Huawei P60",
-    #     PROJECT_ROOT / "data" / "origin" / "4.26数据" / "100" / "TZ" / "data_with_label_wqh极慢_T_Z.csv",
-    # ),
-    # (
-    #     "MEIZU 20",
-    #     PROJECT_ROOT  / "data" / "origin" / "4.26数据" / "100" / "TZ" / "data_with_label_wqh慢速1_T_Z.csv",
-    # ),
-    # (
-    #     "Redmi K70 Pro",
-    #     PROJECT_ROOT  / "data" / "origin" / "4.26数据" / "100" / "TZ" / "data_with_label_wqh慢速2_T_Z.csv",
-    # ),
+    (
+        "Huawei P60",
+        PROJECT_ROOT / "data" / "origin" / "4.26数据" / "100" / "TZ" / "data_with_label_wqh极慢_T_Z.csv",
+    ),
+    (
+        "MEIZU 20",
+        PROJECT_ROOT  / "data" / "origin" / "4.26数据" / "100" / "TZ" / "data_with_label_wqh慢速1_T_Z.csv",
+    ),
+    (
+        "Redmi K70 Pro",
+        PROJECT_ROOT  / "data" / "origin" / "4.26数据" / "100" / "TZ" / "data_with_label_wqh慢速2_T_Z.csv",
+    ),
 
-    # (
-    #     "OPPO Find X",
-    #     PROJECT_ROOT  / "data" / "origin" / "4.26数据" / "100" / "TZ" / "data_with_label_ghw慢速2_T_Z.csv",
-    # ),
-    # (
-    #     "Honor 200-1",
-    #     PROJECT_ROOT / "data" / "12-25-信息文管室内地磁数据采集" / "12-25-Honor 200" / "12-25-信息" / "TZ" / "data_with_label_dataset_2025-12-25_20-45-10-018_T_Z.csv",
-    # ),
-    # (
-    #     "Honor 200-2",
-    #     PROJECT_ROOT  / "data" / "12-25-信息文管室内地磁数据采集" / "12-25-Honor 200" / "12-25-信息" / "TZ" / "data_with_label_dataset_2025-12-25_20-49-31-077_T_Z.csv",
-    # ),
-    # (
-    #     "Honor 200-3",
-    #     PROJECT_ROOT  / "data" / "12-25-信息文管室内地磁数据采集" / "12-25-Honor 200" / "12-25-信息" / "TZ" / "data_with_label_dataset_2025-12-25_20-52-46-084_T_Z.csv",
-    # ),
-
-    # (
-    #     "Honor 200-4",
-    #     PROJECT_ROOT  / "data" / "12-25-信息文管室内地磁数据采集" / "12-25-Honor 200" / "12-25-信息" / "TZ" / "data_with_label_dataset_2025-12-25_20-55-59-251_T_Z.csv",
-    # ),
     (
-        "MEIZU 20-1",
-        PROJECT_ROOT / "data" / "12-25-信息文管室内地磁数据采集" / "12-25-MEIZU 20" / "12-25-信息" / "resample-zscore" / "data_with_label_dataset_2025-12-25_20-45-32-041_T_Z_resample.csv",
-    ),
-    (
-        "MEIZU 20-2",
-        PROJECT_ROOT  / "data" / "12-25-信息文管室内地磁数据采集" / "12-25-MEIZU 20" / "12-25-信息" / "resample-zscore" / "data_with_label_dataset_2025-12-25_20-49-53-750_T_Z_resample.csv",
-    ),
-    (
-        "MEIZU 20-3",
-        PROJECT_ROOT  / "data" / "12-25-信息文管室内地磁数据采集" / "12-25-MEIZU 20" / "12-25-信息" / "resample-zscore" / "data_with_label_dataset_2025-12-25_20-53-05-220_T_Z_resample.csv",
-    ),
-    (
-        "MEIZU 20-4",
-        PROJECT_ROOT  / "data" / "12-25-信息文管室内地磁数据采集" / "12-25-MEIZU 20" / "12-25-信息" / "resample-zscore" / "data_with_label_dataset_2025-12-25_20-56-21-472_T_Z_resample.csv",
-    ),
-    (
-        "MEIZU 20-5",
-        PROJECT_ROOT  / "data" / "12-25-信息文管室内地磁数据采集" / "12-25-MEIZU 20" / "12-25-信息" / "resample-zscore" / "data_with_label_dataset_2025-12-25_20-59-31-537_T_Z_resample.csv",
-    ),
-    (
-        "MEIZU 20-6",
-        PROJECT_ROOT  / "data" / "12-25-信息文管室内地磁数据采集" / "12-25-MEIZU 20" / "12-25-信息" / "resample-zscore" / "data_with_label_dataset_2025-12-25_21-02-42-777_T_Z_resample.csv",
-    ),
-    (
-        "MEIZU 20-7",
-        PROJECT_ROOT  / "data" / "12-25-信息文管室内地磁数据采集" / "12-25-MEIZU 20" / "12-25-信息" / "resample-zscore" / "data_with_label_dataset_2025-12-25_21-06-24-329_T_Z_resample.csv",
-    ),
-    (
-        "MEIZU 20-8",
-        PROJECT_ROOT  / "data" / "12-25-信息文管室内地磁数据采集" / "12-25-MEIZU 20" / "12-25-信息" / "resample-zscore" / "data_with_label_dataset_2025-12-25_21-13-41-891_T_Z_resample.csv",
-    ),
-    (
-        "MEIZU 20-9",
-        PROJECT_ROOT  / "data" / "12-25-信息文管室内地磁数据采集" / "12-25-MEIZU 20" / "12-25-信息" / "resample-zscore" / "data_with_label_dataset_2025-12-25_21-16-48-575_T_Z_resample.csv",
-    ),
-    (
-        "MEIZU 20-10",
-        PROJECT_ROOT  / "data" / "12-25-信息文管室内地磁数据采集" / "12-25-MEIZU 20" / "12-25-信息" / "resample-zscore" / "data_with_label_dataset_2025-12-25_21-19-56-394_T_Z_resample.csv",
+        "OPPO Find X",
+        PROJECT_ROOT  / "data" / "origin" / "4.26数据" / "100" / "TZ" / "data_with_label_ghw慢速2_T_Z.csv",
     ),
 )
 

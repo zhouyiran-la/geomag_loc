@@ -3,29 +3,14 @@ import matplotlib.pyplot as plt
 import matplotlib
 from pathlib import Path
 import matplotlib.patheffects as pe
+from plot.utils.plot_style import setup_plot_cdf_style, style_axis, save_figure
 
-matplotlib.use("Agg")
-plt.style.use("seaborn-v0_8-whitegrid")
-plt_rc = matplotlib.rcParams
+setup_plot_cdf_style()
+
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT_PATH = ROOT / "plot" / "output" / "seq_num_new.png"
+OUTPUT_PATH = ROOT / "figures" / "seq_num_new.svg"
 
-# 字体
-plt_rc["font.family"] = ["Times New Roman", "SimHei", "Microsoft YaHei"]
-plt_rc["axes.unicode_minus"] = False
-
-plt_rc.update({
-    "axes.labelsize": 15,
-    "axes.titlesize": 15,
-    "xtick.labelsize": 13,
-    "ytick.labelsize": 13,
-    "legend.fontsize": 13,
-    "lines.linewidth": 2.0,
-    "grid.alpha": 0.4,
-    "axes.edgecolor": "0.25",
-    "axes.linewidth": 1.5,
-})
 
 # ===== 数据 =====
 bar_width = 0.06
@@ -101,7 +86,7 @@ plt.ylim(0, 8)
 plt.legend(title="", loc='best')
 plt.grid(True, linestyle="--", linewidth=0.5, alpha=0.5)
 plt.tight_layout()
-plt.savefig(OUTPUT_PATH, dpi=600)
+plt.savefig(OUTPUT_PATH, dpi=300)
 plt.close()
 
 print(f"Saved CDF plot to {OUTPUT_PATH.resolve()}")

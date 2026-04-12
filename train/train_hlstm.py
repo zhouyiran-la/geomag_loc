@@ -140,7 +140,7 @@ def main():
     # 训练超参（可按需调）
     batch_size = 32
     lr = 5e-4
-    epochs = 300
+    epochs = 500
     weight_decay = 3e-4
     num_workers = 2 if device.type == "cuda" else 0
     pin_memory = device.type == "cuda"
@@ -196,7 +196,7 @@ def main():
     ).to(device)
 
     # 损失/优化器/调度器（完全沿用你的设置）
-    criterion = WeightedSmoothL1(beta=0.05, w_x=1.0, w_y=1.3).to(device)
+    criterion = WeightedSmoothL1(beta=0.05, w_x=1.3, w_y=1.0).to(device)
     optimizer = Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     scheduler = CosineAnnealingLR(optimizer, T_max=epochs, eta_min=1e-6)
 

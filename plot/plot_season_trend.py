@@ -198,7 +198,7 @@ def plot_one_scale_all_channels(
 def main():
     test_dir = Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-zscore" / "test1"
     ckpt_path = Path("checkpoints") / "time_mixer" / "time_mixer_enc_loc_best_20260123_2059_rmse_2d_1.000_256_wenguan.pt"
-    res_dir = Path("plot") / "output" / "decomp_plots"
+    res_dir = Path("figures") / "decomp_plots"
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     batch_size = 16
@@ -270,7 +270,7 @@ def main():
     # 画第一个样本、第0通道，在所有尺度上的分解
     plot_multiscale_decomposition(
         decomp_dict=decomp_dict,
-        save_path=res_dir / "multiscale_decomp_channel0_wenguan_test1_256_2.png",
+        save_path=res_dir / "multiscale_decomp_channel0_wenguan_test1_256_2.svg",
         batch_idx=12,
         channel_idx=0,
         show=False,
@@ -279,7 +279,7 @@ def main():
     # 画第0个尺度上，所有通道的分解
     plot_one_scale_all_channels(
         decomp_dict=decomp_dict,
-        save_path=res_dir / "scale0_all_channels_wenguan_test1.png",
+        save_path=res_dir / "scale0_all_channels_wenguan_test1.svg",
         scale_idx=0,
         batch_idx=12,
         show=False,

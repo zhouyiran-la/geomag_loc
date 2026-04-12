@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 import matplotlib
 from pathlib import Path
 import matplotlib.patheffects as pe
-from plot.utils.plot_style import setup_plot_equal_style, style_axis, save_figure
+from plot.utils.plot_style import setup_plot_cdf_style, style_axis, save_figure
 
-setup_plot_equal_style()
+setup_plot_cdf_style()
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT_PATH = ROOT  / "figures" / "different_scale_num.png"
+OUTPUT_PATH = ROOT  / "figures" / "different_scale_num.svg"
 
 
 x = np.array([1, 2, 3, 4])

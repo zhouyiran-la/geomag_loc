@@ -17,10 +17,10 @@ CSV_PATHS = [
     # ROOT / "runs" / "loc_res" / "time_mixer_different_phone_xinxi" / "2141_xinxi_test4_loc_res_meanerr_0.7676.csv",
     
     # ROOT / "runs" / "loc_res" / "time_mixer" / "1854_wenguan_test1_loc_res_meanerr_0.8307.csv",
-    ROOT / "runs" / "loc_res" / "time_mixer" / "1854_wenguan_test2_loc_res_meanerr_0.8259.csv",
-    ROOT / "runs" / "loc_res" / "time_mixer" / "2047_wenguan_test3_loc_res_meanerr_1.0455.csv",
-    ROOT / "runs" / "loc_res" / "time_mixer" / "1405_wenguan_test3_loc_res_meanerr_0.8808.csv",
-    ROOT / "runs" / "loc_res" / "time_mixer" / "1854_wenguan_test3_loc_res_meanerr_0.9298.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_phone_wenguan_2" / "1854_wenguan_test2_loc_res_meanerr_0.8259.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_phone_wenguan_2" / "2047_wenguan_test3_loc_res_meanerr_1.0455.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_phone_wenguan_2" / "1405_wenguan_test3_loc_res_meanerr_0.8808.csv",
+    ROOT / "runs" / "loc_res" / "time_mixer_different_phone_wenguan_2" / "1854_wenguan_test3_loc_res_meanerr_0.9298.csv",
 
     # ROOT / "runs" / "loc_res" / "time_mixer_different_phone_xinxi_2" / "1817_xinxi_test5_loc_res_meanerr_0.7809.csv",
     # ROOT / "runs" / "loc_res" / "time_mixer_different_phone_xinxi_2" / "2141_xinxi_test6_loc_res_meanerr_0.7204.csv",
@@ -36,7 +36,7 @@ CSV_PATHS = [
 
 LABELS = ["Huawei P60", "MEIZU 20", "OPPO Find X", "Xiaomi 14"]
 COLORS = ["#0000FF", "#FF0000", "#9400D3","#F3A332"]
-OUTPUT_PATH = ROOT / "plot" / "output" / "loc_traj_different_phone_wenguan.png"
+OUTPUT_PATH = ROOT / "figures" / "loc_traj_different_phone_wenguan.svg"
 
 def load_result_detail_csv(path):
     """
@@ -272,7 +272,7 @@ def plot_multi_trajectories(
 
 
     plt.tight_layout()
-    fig.savefig(output_path, dpi=600)
+    fig.savefig(output_path, dpi=300)
     plt.close(fig)
 
 

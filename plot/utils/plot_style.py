@@ -30,9 +30,64 @@ def setup_plot_equal_style():
         "grid.alpha": 0.4,
         "axes.edgecolor": "0.25",
         "axes.linewidth": 1.5,
-        "savefig.dpi": 600,
+        "savefig.dpi": 300,
         "figure.dpi": 150,
     })
+
+def setup_plot_resample_style():
+    """
+    全局 Matplotlib 样式设置。
+    在每个绘图脚本开头调用一次即可。
+    """
+    plt.style.use("seaborn-v0_8-whitegrid")
+
+    matplotlib.rcParams["font.family"] = "sans-serif"
+    matplotlib.rcParams["font.sans-serif"] = [
+       "Source Han Sans SC"
+    ]
+    matplotlib.rcParams["axes.unicode_minus"] = False
+
+    matplotlib.rcParams.update({
+        
+        "axes.labelsize": 17,
+        "axes.titlesize": 17,
+        "xtick.labelsize": 15,
+        "ytick.labelsize": 15,
+        "legend.fontsize": 15,
+        "lines.linewidth": 2.0,
+        "grid.alpha": 0.4,
+        "axes.edgecolor": "0.25",
+        "axes.linewidth": 2.0,
+        "savefig.dpi": 300,
+        "figure.dpi": 150,
+    })
+
+def setup_plot_cdf_style():
+    """
+    全局 Matplotlib 样式设置。
+    在每个绘图脚本开头调用一次即可。
+    """
+    plt.style.use("seaborn-v0_8-whitegrid")
+
+    matplotlib.rcParams["font.family"] = "sans-serif"
+    matplotlib.rcParams["font.sans-serif"] = [
+       "Source Han Sans SC"
+    ]
+    matplotlib.rcParams["axes.unicode_minus"] = False
+
+    matplotlib.rcParams.update({
+        
+        "axes.labelsize": 20,
+        "axes.titlesize": 20,
+        "xtick.labelsize": 18,
+        "ytick.labelsize": 18,
+        "legend.fontsize": 18,
+        "lines.linewidth": 2.0,
+        "grid.alpha": 0.4,
+        "axes.edgecolor": "0.25",
+        "axes.linewidth": 2.0,
+    })
+
 
 
 def setup_plot_season_trend_style():
@@ -54,7 +109,7 @@ def setup_plot_season_trend_style():
         "grid.alpha": 0.4,
         "axes.edgecolor": "0.25",
         "axes.linewidth": 1.5,
-        "savefig.dpi": 600,
+        "savefig.dpi": 300,
         "figure.dpi": 150,
     })
 

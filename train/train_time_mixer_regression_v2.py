@@ -135,6 +135,9 @@ def main():
     val_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter-v2" / "eval")
     test_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-wenguan-resample-filter-v2" / "test1")
 
+    # train_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "train")
+    # val_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "eval")
+    # test_dir = str(Path("data") / "data_for_train_test_v14" / "12.25-xinxi-resample-zscore" / "test1")
     
     gpu_id = 0  # 用第1张卡
     device = torch.device(f"cuda:{gpu_id}" if torch.cuda.is_available() else "cpu")
@@ -146,9 +149,9 @@ def main():
 
     batch_size = 32
     lr = 5e-4
-    epochs = 100
+    epochs = 300
     # weight_decay改大了一些
-    weight_decay = 5e-4
+    weight_decay = 3e-4
     num_workers = 2 if device.type == "cuda" else 0
     pin_memory = device.type == "cuda"
 
@@ -202,14 +205,14 @@ def main():
         d_model=128,
         seq_len=128,
         down_sampling_window=2,
-        down_sampling_layers=1,
+        down_sampling_layers=2,
         num_pdm_blocks=2,
         moving_avg_kernel=11, 
         nhead=8,
         num_layers=2,
         output_dim=2,
     ).to(device)
-    criterion = WeightedSmoothL1(beta=0.05, w_x=1.3, w_y=1.0).to(device)
+    criterion = WeightedSmoothL1(beta=0.05, w_x=1.0, w_y=1.3).to(device)
     # criterion = nn.MSELoss()
     optimizer = Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     # 学习率调度器
@@ -227,7 +230,7 @@ def main():
     date_suffix = datetime.now().strftime("_%Y%m%d_%H%M")
     checkpoints_dir.mkdir(parents=True, exist_ok=True)
     run_dir.mkdir(parents=True, exist_ok=True)
-    best_path = checkpoints_dir / f"time_mixer_enc_loc_best{date_suffix}.pt"
+    best_path = checkpoints_dir / f"time_mixer_enc_loc_best{date_suffix}_wenguan.pt"
 
     
     train_losses, val_losses = [], []

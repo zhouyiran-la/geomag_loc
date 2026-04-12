@@ -8,27 +8,10 @@ import numpy as np
 from matplotlib.ticker import AutoMinorLocator
 from matplotlib import font_manager
 import matplotlib
+from plot.utils.plot_style import setup_plot_cdf_style
 
+setup_plot_cdf_style()
 
-matplotlib.rcParams["axes.unicode_minus"] = False
-
-matplotlib.use("Agg")
-plt.style.use("seaborn-v0_8-whitegrid")
-plt_rc = matplotlib.rcParams
-
-plt_rc["font.family"] = ["Noto Sans CJK JP", "DejaVu Sans"]
-plt_rc["axes.unicode_minus"] = False
-plt_rc.update({
-    "axes.labelsize": 15,
-    "axes.titlesize": 15,
-    "xtick.labelsize": 13,
-    "ytick.labelsize": 13,
-    "legend.fontsize": 13,
-    "lines.linewidth": 2.0,
-    "grid.alpha": 0.4,
-    "axes.edgecolor": "0.25",
-    "axes.linewidth": 1.5,
-})
 
 ROOT = Path(__file__).resolve().parents[1]
 CSV_PATHS = [
@@ -39,18 +22,20 @@ CSV_PATHS = [
     ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "0051_wenguan_test2_no_decompose_loc_res_meanerr_1.6449.csv",
     ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_wenguan" / "1317_wenguan_test1_no_decompose_loc_res_meanerr_1.7089.csv",
     
-    # ROOT / "runs" / "loc_res" / "time_mixer" / "2141_xinxi_test2_season+trend_loc_res_meanerr_0.6825.csv",
-    # ROOT / "runs" / "loc_res" / "time_mixer" / "0012_xinxi_test3_no_mix_loc_res_meanerr_0.8363.csv",
-    # ROOT / "runs" / "loc_res" / "time_mixer" / "2302_xinxi_test1_trend_only_loc_res_meanerr_0.8995.csv",
-    # ROOT / "runs" / "loc_res" / "time_mixer" / "2322_xinxi_test3_trend_only_loc_res_meanerr_1.2581.csv",
-    # # ROOT / "runs" / "loc_res" / "time_mixer" / "2322_xinxi_test3_trend_only_loc_res_meanerr_1.2581.csv",
-    # ROOT / "runs" / "loc_res" / "time_mixer" / "2333_xinxi_test1_no_decompose_loc_res_meanerr_1.5111.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_xinxi" / "2141_xinxi_test2_season+trend_loc_res_meanerr_0.6825.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_xinxi" / "0012_xinxi_test3_no_mix_loc_res_meanerr_0.8363.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_xinxi" / "2302_xinxi_test1_trend_only_loc_res_meanerr_0.8995.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_xinxi" / "2322_xinxi_test3_trend_only_loc_res_meanerr_1.2581.csv",
+    # # ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_xinxi" / "2322_xinxi_test3_trend_only_loc_res_meanerr_1.2581.csv",
+    # ROOT / "runs" / "loc_res" / "time_mixer_different_feature_group_xinxi" / "2333_xinxi_test1_no_decompose_loc_res_meanerr_1.5111.csv",
     
 ]
 
 # LABELS = ["Proposed", "Wang(2024)", "HLSTM(2022)", "MAIL(2020)", "RNN"]
-LABELS = ["Season_Trend", "Season_Trend_No_Mixed", "Trend_Only", "Season_Only" , "No_Decompose"]
-OUTPUT_PATH = ROOT / "plot" / "output" / "loc_cdf_differernt_feature_group3.png"
+LABELS = [
+    "Season-Trend", "Season-Trend-No-Mixed", "Trend-Only", "Season-Only" , "No-Decompose"
+]
+OUTPUT_PATH = ROOT / "figures" / "loc_cdf_differernt_feature_wenguan.svg"
 PLOT_TITLE = "Localization Error CDF"
 X_MAX = None  # Set to a float to force xmax, or None to auto-scale.
 
@@ -139,13 +124,6 @@ def main():
     # plt.title(PLOT_TITLE)
     plt.grid(True, linestyle="--", linewidth=0.5, alpha=0.5)
     plt.legend(loc="lower right")
-    # x_max = 0
-    if X_MAX is not None:
-        x_max = X_MAX
-    else:
-        x_max = max_x * 1.05 if max_x > 0 else 1.0
-    x_min = -0.5
-    # x_max = 6
     plt.xticks(np.linspace(0, 25, num=6))
     plt.yticks(np.linspace(0.0, 1.0, num=6))
     ax = plt.gca()
@@ -153,11 +131,11 @@ def main():
     ax.yaxis.set_minor_locator(AutoMinorLocator(4))
     ax.tick_params(axis="both", which="major", direction="in", length=6, width=0.8)
     ax.tick_params(axis="both", which="minor", direction="in", length=3, width=0.6)
-    plt.xlim(x_min, x_max)
+    plt.xlim(-0.5, 20)
     plt.ylim(0, 1.0)
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     plt.tight_layout()
-    plt.savefig(OUTPUT_PATH, dpi=600)
+    plt.savefig(OUTPUT_PATH, dpi=300)
     plt.close()
     print(f"Saved CDF plot to {OUTPUT_PATH.resolve()}")
 

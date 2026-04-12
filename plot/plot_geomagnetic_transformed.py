@@ -9,11 +9,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import matplotlib
+# from plot.utils.plot_style import setup_plot_resample_style, style_axis, save_figure
 
+# setup_plot_resample_style()
 matplotlib.use("Agg")
 plt.style.use("seaborn-v0_8-whitegrid")
 plt_rc = matplotlib.rcParams
-plt_rc["font.family"] = ["Times New Roman", "SimHei", "Microsoft YaHei"]
+plt_rc["font.family"] = ["Noto Sans CJK JP", "DejaVu Sans"]
 plt_rc["axes.unicode_minus"] = False
 plt_rc.update(
     {
@@ -22,25 +24,24 @@ plt_rc.update(
         "xtick.labelsize": 11,
         "ytick.labelsize": 11,
         "legend.fontsize": 11,
-        "lines.linewidth": 1.6,
-        "grid.alpha": 0.4,
+        "lines.linewidth": 1.5,
         "axes.edgecolor": "0.25",
-        "axes.linewidth": 0.8,
+        "axes.linewidth": 1.5,
     }
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-OUTPUT_DIR = Path(__file__).resolve().parent / "output"
+OUTPUT_DIR = Path(__file__).resolve().parents[1] / "figures"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # (label, relative path)
 DATASETS: Iterable[Tuple[str, Path]] = (
     (
-        "姿态固定",
+        "水平",
         PROJECT_ROOT / "data" / "origin" / "4.26数据" / "50" / "com" / "data_with_label_wqh慢速.csv",
     ),
     (
-        "姿态变化",
+        "任意",
         PROJECT_ROOT
         / "data"
         / "origin"
@@ -103,11 +104,11 @@ def load_transformed(path: Path) -> pd.DataFrame:
 def plot_transformed(datasets: Iterable[Tuple[str, pd.DataFrame]]) -> Path:
     """Plot transformed components for both datasets."""
     axis_labels = {
-        "ms": "Ms (µT)",
-        "mh": "Mh (µT)",
-        "mv": "Mv (µT)",
+        "ms": "ms (µT)",
+        "mh": "mh (µT)",
+        "mv": "mv (µT)",
     }
-    fig, axes = plt.subplots(3, 1, figsize=(12, 8), sharex=True)
+    fig, axes = plt.subplots(3, 1, figsize=(9, 6), sharex=True)
     palette = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
 
     for ax, column in zip(axes, axis_labels):
@@ -120,15 +121,15 @@ def plot_transformed(datasets: Iterable[Tuple[str, pd.DataFrame]]) -> Path:
                 label=label if column == "ms" else None,
             )
         ax.set_ylabel(axis_labels[column])
-        ax.grid(True, linestyle="--", linewidth=0.5, alpha=0.5)
-
+        ax.grid(False)
+        ax.set_xlim(-10, 2010)
     axes[0].legend(loc="upper right", frameon=False)
     axes[-1].set_xlabel("样本序号")
-    # fig.suptitle("姿态固定 vs. 姿态变化 - 转换后地磁分量对比")
-    fig.tight_layout(rect=(0, 0.01, 1, 0.97))
+    
+    fig.tight_layout(rect=(0, 0.005, 1, 0.995), pad=0.5)
 
-    output_path = OUTPUT_DIR / "geomagnetic_transformed_pose_comparison.png"
-    fig.savefig(output_path, dpi=600)
+    output_path = OUTPUT_DIR / "geomagnetic_transformed_pose_comparison.svg"
+    fig.savefig(output_path, dpi=300)
     plt.close(fig)
     return output_path
 
